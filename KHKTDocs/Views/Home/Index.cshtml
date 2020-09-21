@@ -2,7 +2,52 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid docmanage-content">
+    <div class="col-lg-2 col-sm-3 pad">
+        <div class="menutree">
+            <div class="docitem-title">
+                <i class="fa fa-bars"></i> &nbsp; <span>DANH MỤC</span>
+            </div>
+            <div class="treeview-content">
+                <div class="doctree">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-10 col-sm-9 pad">
+        <div class="docsearch">
+            <div class="docitem-title">
+                <i class="fa fa-search"></i> &nbsp; <span>TÌM KIẾM TÀI LIỆU</span>
+            </div>
+            <div class="search-fields form">
+                <div class="form-group col-lg-12 col-sm-12">
+                    <span>Dự án</span>
+                    <input type="text" class="form-control" />
+                </div>
+                <div class="form-group col-lg-6 col-sm-6">
+                    <span>Giai đoạn</span>
+                    <input type="text" class="form-control" />
+                </div>
+                <div class="form-group col-lg-6 col-sm-6">
+                    <span>Loại file</span>
+                    <select class="form-control"></select>
+                </div>
+                <div class="form-group col-lg-6 col-sm-6">
+                    <span>Cơ quan ban hành</span>
+                    <input class="form-control" />
+                </div>
+                <div class="form-group col-lg-6 col-sm-6">
+                    <span>Trạng thái</span>
+                    <select class="form-control"></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="doclist">
+            <div class="docitem-title">
+                <i class="fa fa-list"></i> &nbsp; <span>DANH SÁCH TÀI LIỆU</span>
+            </div>
+        </div>
+    </div>
 </div>

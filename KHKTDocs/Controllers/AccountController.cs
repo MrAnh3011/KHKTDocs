@@ -22,6 +22,12 @@ namespace KHKTDocs.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
+
         [HttpPost]
         [Route("/postusersession")]
         public async Task<IActionResult> PostUserSession(LoginViewModel loginViewModel)
@@ -36,12 +42,6 @@ namespace KHKTDocs.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, _claimsPrincipal);
 
             return Json(new { status = "success", message = "Login success" });
-        }
-
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login");
         }
     }
 }
