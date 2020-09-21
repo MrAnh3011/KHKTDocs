@@ -1,0 +1,43 @@
+﻿@model KHKTDocs.Models.LoginViewModel
+
+@{
+    Layout = null;
+    ViewBag.Title = "Đăng nhập";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="~/favicon.ico" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto|Varela+Round' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/Login.css">
+</head>
+<body>
+    <div class="loading-screen">
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    </div>
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+
+            <div class="fadeIn first">
+                <img src="~/images/anhpt.png" id="icon" alt="User Icon" />
+                <h1>KHKT Docs</h1>
+            </div>
+
+            <input type="text" id="userName" class="fadeIn second" name="userName" placeholder="User Name">
+            <input type="password" id="password" class="fadeIn third" name="password" placeholder="Password">
+            <input type="submit" class="fadeIn fourth" value="Log In">
+        </div>
+        <div class="credit">
+            © Created by AnhPT
+        </div>
+    </div>
+    <script src="~/js/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="~/js/Login.js"></script>
+</body>
+</html>

@@ -1,21 +1,13 @@
-﻿using ApplicationCore.Entities.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace ApplicationCore.Entities
+namespace KHKTDocs.Models
 {
-    public class LoginModel: BaseEntity
+    public class LoginViewModel
     {
         public string Username { set; get; }
-
         public string SessionKey { set; get; }
-
         public string AllowDevelop { set; get; }
-
         public string AllowViewAllData { set; get; }
-
         public string DisplayName { set; get; }
     }
 }
