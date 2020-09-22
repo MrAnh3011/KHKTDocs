@@ -1,12 +1,14 @@
-﻿using System;
+﻿using ApplicationCore.Entities.Common;
+using ApplicationCore.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ApplicationCore.Entities
 {
-    public class Document
+    public class Document : BaseEntity,IAggregateRoot
     {
-        public int DocumentId { get; set; }
+        public string DocumentId { get; set; }
         public int DocumentTypeId { get; set; }
         public string DocumentCode { get; set; }
         public string DocumentNo { get; set; }

@@ -33,7 +33,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
@@ -52,7 +52,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(string id)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
