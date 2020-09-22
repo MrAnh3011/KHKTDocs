@@ -3,50 +3,93 @@
 }
 
 <div class="container-fluid docmanage-content">
-    <div class="col-lg-2 col-sm-3 pad">
-        <div class="menutree">
-            <div class="docitem-title">
-                <i class="fa fa-bars"></i> &nbsp; <span>DANH MỤC</span>
-            </div>
-            <div class="treeview-content">
-                <div class="doctree">
+    <div class="row">
+        <div class="col-lg-3 col-sm-4 pad">
+            <div class="menutree whitebg">
+                <div class="docitem-title">
+                    <i class="fa fa-bars"></i> &nbsp; <span>DANH MỤC</span>
+                </div>
+                <div class="treeview-content">
+                    <div class="doctree">
 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9 col-sm-8 pad">
+            <div class="docsearch whitebg">
+                <div class="docitem-title">
+                    <i class="fa fa-search"></i> &nbsp; <span>TÌM KIẾM TÀI LIỆU</span>
+                </div>
+                <div class="search-fields form">
+                    <div class="form-group col-lg-12 col-sm-12">
+                        <span>Dự án</span>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group col-lg-6 col-sm-6">
+                        <span>Giai đoạn</span>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group col-lg-6 col-sm-6">
+                        <span>Loại file</span>
+                        <select class="form-control">
+                            <option value="-1">Tất cả</option>
+                            <option value="1">.CAD</option>
+                            <option value="2">.PDF</option>
+                            <option value="3">.JPG</option>
+                            <option value="4">.DOC</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-6 col-sm-6">
+                        <span>Cơ quan ban hành</span>
+                        <input class="form-control" />
+                    </div>
+                    <div class="form-group col-lg-6 col-sm-6">
+                        <span>Trạng thái</span>
+                        <select class="form-control">
+                            <option value="-1">Tất cả</option>
+                            <option value="1">Chờ duyệt</option>
+                            <option value="2">Đã duyệt</option>
+                            <option value="3">Ban hành</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-10 col-sm-9 pad">
-        <div class="docsearch">
+    <div class="col-md-12 pad">
+        <div class="doclist whitebg">
             <div class="docitem-title">
-                <i class="fa fa-search"></i> &nbsp; <span>TÌM KIẾM TÀI LIỆU</span>
-            </div>
-            <div class="search-fields form">
-                <div class="form-group col-lg-12 col-sm-12">
-                    <span>Dự án</span>
-                    <input type="text" class="form-control" />
+                <div class="grid-title-name">
+                    <i class="fa fa-list"></i> &nbsp; <span>DANH SÁCH TÀI LIỆU</span>
                 </div>
-                <div class="form-group col-lg-6 col-sm-6">
-                    <span>Giai đoạn</span>
-                    <input type="text" class="form-control" />
-                </div>
-                <div class="form-group col-lg-6 col-sm-6">
-                    <span>Loại file</span>
-                    <select class="form-control"></select>
-                </div>
-                <div class="form-group col-lg-6 col-sm-6">
-                    <span>Cơ quan ban hành</span>
-                    <input class="form-control" />
-                </div>
-                <div class="form-group col-lg-6 col-sm-6">
-                    <span>Trạng thái</span>
-                    <select class="form-control"></select>
+                <div class="grid-button">
+                    <a href="~/Home/Create" class="">
+                        <i class="fa fa-plus"></i> Thêm mới
+                    </a>
                 </div>
             </div>
-        </div>
-
-        <div class="doclist">
-            <div class="docitem-title">
-                <i class="fa fa-list"></i> &nbsp; <span>DANH SÁCH TÀI LIỆU</span>
+            <div class="doc-grid form">
+                <table id="tbl-docs" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã VB</th>
+                            <th>Số hiệu VB</th>
+                            <th>Tên tài liệu</th>
+                            <th>Danh mục TL</th>
+                            <th>Mô tả</th>
+                            <th>CQ ban hành</th>
+                            <th>Ngày HL</th>
+                            <th>Trạng thái</th>
+                            <th></th>
+                            <th>Mô tả chi tiết</th>
+                            <th>DocumentId</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

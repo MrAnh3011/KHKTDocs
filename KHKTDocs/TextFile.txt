@@ -1,0 +1,127 @@
+﻿PROCEDURE SP_GET_DOCTYPE
+(
+pv_sessionKey string,
+listDoc OUT pkg_data.cursor)
+AS
+    temp_str VARCHAR2(4000);
+    temp_text VARCHAR2(4000);
+    f_result VARCHAR2(4000);
+    v_loop NUMBER := 0;
+    CURSOR cur_v(pv_sessionKey VARCHAR2) IS
+        select ur.DOCTYPE_LIST || ',' || (select dr.DOCTYPE_LIST from apec_docs_department_role dr where dr.DEPARTMENT_ID = sd.dep_id) DOCTYPE_LIST
+        from sessions s
+        left join users u on s.user_id = u.user_id
+        left join apec_docs_user_role ur on u.staff_id = ur.staff_id
+        left join apec_staff_deparment sd on u.staff_id = sd.staff_id
+        where s.session_key = pv_sessionKey and sd.dep_id is not NULL;
+    TYPE DICT IS TABLE OF VARCHAR2(4000) INDEX BY VARCHAR(4000);
+    MYDICT DICT;
+BEGIN
+    OPEN cur_v(pv_sessionKey);
+    LOOP
+        FETCH cur_v INTO temp_str;
+        v_loop:= 0;
+        LOOP
+            v_loop := v_loop + 1;
+            temp_text := REGEXP_SUBSTR(temp_str, '[^,]+', 1, v_loop);
+            EXIT WHEN temp_text IS NULL;
+
+            IF NOT MYDICT.exists(temp_text) THEN
+                MYDICT(temp_text) := temp_text;
+            f_result := f_result|| ',' || temp_text;
+            END IF;
+        END LOOP;
+        EXIT WHEN cur_v%NOTFOUND;
+    END LOOP;
+
+    OPEN listDoc FOR
+        SELECT * FROM APEC_DOCS_DOCTYPE DT
+        WHERE dt.is_deleted = 'N' AND DT.menuuserid IN (
+                SELECT distinct column_value  FROM TABLE(str2arr(f_result)));
+END; -- Procedure
+
+
+PROCEDURE SP_GET_DOCS
+(
+    pv_groupId NUMBER,
+    pv_sessionKey nvarchar2,
+    listDoc OUT pkg_data.CURSOR
+)
+IS
+    temp_str VARCHAR2(4000);
+    temp_text VARCHAR2(4000);
+    f_result VARCHAR2(4000);
+    v_loop NUMBER := 0;
+    CURSOR cur_v(pv_sessionKey VARCHAR2) IS
+        select ur.DOCTYPE_LIST || ',' || (select dr.DOCTYPE_LIST from apec_docs_department_role dr where dr.DEPARTMENT_ID = sd.dep_id) DOCTYPE_LIST
+        from sessions s
+        left join users u on s.user_id = u.user_id
+        left join apec_docs_user_role ur on u.staff_id = ur.staff_id
+        left join apec_staff_deparment sd on u.staff_id = sd.staff_id
+        where s.session_key = pv_sessionKey and sd.dep_id is not NULL;
+    TYPE DICT IS TABLE OF VARCHAR2(4000) INDEX BY VARCHAR(4000);
+    MYDICT DICT;
+BEGIN
+    OPEN cur_v(pv_sessionKey);
+    LOOP
+        FETCH cur_v INTO temp_str;
+        v_loop:= 0;
+        LOOP
+            v_loop := v_loop + 1;
+            temp_text := REGEXP_SUBSTR(temp_str, '[^,]+', 1, v_loop);
+            EXIT WHEN temp_text IS NULL;
+
+            IF NOT MYDICT.exists(temp_text) THEN
+                MYDICT(temp_text) := temp_text;
+            f_result := f_result|| ',' || temp_text;
+            END IF;
+        END LOOP;
+        EXIT WHEN cur_v%NOTFOUND;
+    END LOOP;
+
+
+    OPEN listDoc for
+    select * from APEC_DOCS_DOCUMENT d
+    where
+    d.status = '1' and d.isactive = '1' AND d.is_deleted = 'N'
+    and
+    d.documenttypeid in
+    (
+        select menuuserid from APEC_DOCS_DOCTYPE a
+        where a.is_deleted = 'N'
+        start with parentid = pv_groupId
+        connect by prior menuuserid = parentid
+
+        union
+
+        select menuuserid
+        from APEC_DOCS_DOCTYPE
+        where menuuserid = pv_groupId
+    )
+    and d.documenttypeid in (
+        SELECT distinct column_value  FROM TABLE(str2arr(
+            (f_result)
+        ))
+    )
+    ;
+END; -- Procedure
+
+PROCEDURE sp_insert_doc_type
+    (
+    PV_NAME VARCHAR2,
+    PV_PARENT_ID NUMBER,
+    PV_STAFF_ID VARCHAR2,
+    listDocType OUT pkg_data.cursor
+    )
+IS
+    PV_ID NUMBER;
+BEGIN
+    write_error_log('insert doc type ' || PV_NAME || '-' || PV_PARENT_ID || '-' || PV_STAFF_ID);
+    SELECT seq_doc_type.NEXTVAL INTO PV_ID FROM DUAL;
+    INSERT INTO apec_docs_doctype(MENUUSERID, NAME, PARENTID, DISPLAYTREE)
+    VALUES(PV_ID, PV_NAME, PV_PARENT_ID, PV_ID || '-' || PV_NAME );
+    OPEN listDocType FOR
+        SELECT PV_ID MENUUSERID FROM dual;
+END; -- Procedure
+
+

@@ -1,13 +1,23 @@
 ﻿/* BASIC*/
 body {
     font-family: "Roboto", sans-serif;
-    height:100vh;
+    height: 100vh;
+    background: url(../images/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 a .navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
+}
+
+.text-red {
+    color: #E26A6A;
+}
+.whitebg{
+    background: #FFF;
 }
 
 /* Provide sufficient contrast against white background */
@@ -34,8 +44,18 @@ header nav a:first-child {
     font-weight: bold;
 }
 
+header nav a:last-child {
+    color: #fff;
+    padding: 5px;
+}
+
+header nav a:last-child:hover {
+    color: #fff;
+    text-decoration: none;
+    background: #666;
+}
+
 header nav a:last-child i {
-    padding: 10px 10px 10px 5px;
     font-size: 20px;
 }
 
@@ -46,9 +66,17 @@ header nav a:last-child i {
     margin-top: 20px;
 }
 
+.docmanage-content .row {
+    margin: 0;
+}
+
 .docmanage-content .pad {
     padding: 0px 10px;
     float: left;
+}
+
+.docmanage-content .pad>div {
+    height: 100%;
 }
 
 .docmanage-content .docitem-title {
@@ -57,6 +85,8 @@ header nav a:last-child i {
     font-weight: bold;
     padding-bottom: 5px;
     border-bottom: 1px solid #c5c5c5;
+    margin-bottom: 10px;
+    overflow: hidden;
 }
 
 .docmanage-content .menutree {
@@ -71,11 +101,11 @@ header nav a:last-child i {
     padding: 10px;
 }
 
-.docmanage-content .doclist {
+.docmanage-content .doclist{
     border: 1px solid #c5c5c5;
     border-radius: 5px;
     padding: 10px;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .docmanage-content .docsearch .search-fields {
@@ -94,6 +124,70 @@ header nav a:last-child i {
 .docmanage-content .docsearch .search-fields select{
     width: 100%
 }
+
+.docmanage-content .doclist .grid-title-name{
+    float: left;
+}
+
+.docmanage-content .doclist .grid-button {
+    float: right;
+}
+
+.docmanage-content .doclist .doc-grid table thead th {
+    text-align: center;
+    padding: 5px;
+    border-bottom: none;
+}
+
+.create-doc-title {
+    margin-top: 20px;
+    padding-left: 20px;
+    text-align: center;
+}
+
+.create-doc-title h3 span {
+    color: #000;
+    font-size: 14px;
+}
+
+.page-bar {
+    background: #eee;
+}
+
+.page-bar ul {
+    padding: 10px 0px 10px 20px;
+}
+
+.page-bar ul li {
+    display: inline;
+}
+
+.page-bar ul li a {
+    color : #000;
+    text-decoration: none;
+}
+
+.create-content .content-items {
+    margin : 0px 20px;
+    padding-top: 20px;
+    border: 1px solid #c5c5c5;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.create-content div {
+    float: left;
+}
+.create-content .create-button {
+    text-align: center;
+    margin: 20px 0px;
+}
+
+.create-content .create-button *{
+    margin: 0px 10px;
+    width: 80px;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -132,8 +226,8 @@ body {
 }
 
 .footer {
-    position: absolute;
     bottom: 0;
+    position: absolute;
     width: 100%;
     white-space: nowrap;
     text-align: center;
