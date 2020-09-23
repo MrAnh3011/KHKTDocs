@@ -118,6 +118,11 @@ namespace KHKTDocs.Controllers
             return Json(new { status = "success", message = "success !", ListDocs = lstDocs });
         }
 
+        public async Task<JsonResult> FolderEvents(FolderViewModel folderViewModel)
+        {
+            return Json(new { status = "success", message = "success !", ListDocs = lstDocs });
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -1,11 +1,11 @@
 ﻿$(document).ready(async function () {
-    var lstMenu = await GetListMenu();
-    var lstSelect = BindMenuSelect(lstMenu.listMenu);
-    //select2 
-    $("#doc_folder").select2ToTree({ treeData: { dataArr: lstSelect } })
-    //end select2 
 
-    //tree menu 
+    //#region Bind tree data to DocTree and Select
+    var lstMenu = await GetListMenu();
+
+    var lstSelect = BindMenuSelect(lstMenu.listMenu);
+    $("#doc_folder").select2ToTree({ treeData: { dataArr: lstSelect } })
+
     $("#doctree").jstree({
         "core": {
             "data": lstMenu.listMenu
@@ -15,9 +15,33 @@
         ]
     });
 
-    //end tree menu 
+    $("#doctree").on("create_node.jstree", function (e, data) {
+        let model = {
+            id: data.node.id,
+            parent: data.node.parent,
+            action: 'Create'
+        };
+        SaveDocType(model);
+    });
+    $("#doctree").on("rename_node.jstree", function (e, data) {
+        let model = {
+            id: data.node.id,
+            parent: data.node.parent,
+            action: 'Rename'
+        };
+        SaveDocType(model);
+    });
+    $("#doctree").on("delete_node.jstree", function (e, data) {
+        let model = {
+            id: data.node.id,
+            parent: data.node.parent,
+            action: 'Delete'
+        };
+        SaveDocType(model);
+    });
+    //#endregion Bind tree data to DocTree and Select
 
-    //data table
+    //#region Bind data to DataTable
     var table = $("#tbl-docs").DataTable({
         searching: false,
         lengthChange: false,
@@ -65,13 +89,11 @@
                 }
             });
     });
+    //#endregion Bind data to DataTable
     SearchListDocs();
 
-    //end data table
 
-
-
-    //action on page
+    //#region Controls's action
     $("#submitDocs").click(function () {
         ShowLoadingScreen();
         let document_name = $("#doc_name").val();
@@ -115,15 +137,15 @@
             }
         });
     });
-    //End action on page
+    //#endregion Controls's action
 });
 function ShowLoadingScreen() {
     $(".loading-screen").css({ "display": "block" });
 }
-
 function HideLoadingScreen() {
     $(".loading-screen").css({ "display": "none" });
 }
+
 async function GetListMenu() {
     let lst;
     try {
@@ -139,6 +161,7 @@ async function GetListMenu() {
         console.error(e);
     }
 }
+
 function BindMenuSelect(listAll) {
     var listTree = [];
     var parentItems = listAll.filter(x => x.parent === '#');
@@ -171,6 +194,7 @@ function BindSubMenuSelect(listAll, pItem) {
     };
     return treeItems;
 }
+
 function SearchListDocs() {
     try {
         ShowLoadingScreen()
@@ -242,4 +266,19 @@ function SearchListDocs() {
         HideLoadingScreen();
         alert(err);
     }
+}
+
+function SaveDocType(model) {
+    $.ajax({
+        url: "/Home/FolderEvents",
+        data: model,
+        type: "POST",
+        success: function (result) {
+            alert(model.action + " thành công");
+            resolve(result);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
 }
