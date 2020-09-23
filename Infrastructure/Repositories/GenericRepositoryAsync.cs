@@ -1,12 +1,12 @@
-﻿using Dapper;
+﻿using ApplicationCore.Entities.Common;
+using ApplicationCore.Interfaces;
+using Dapper;
 using Microsoft.Extensions.Configuration;
+using Oracle.ManagedDataAccess.Client;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using ApplicationCore.Entities.Common;
-using ApplicationCore.Interfaces;
 
 namespace Infrastructure.Repositories
 {
@@ -25,7 +25,7 @@ namespace Infrastructure.Repositories
             var stringOfColumns = string.Join(", ", columns);
             var stringOfParameters = string.Join(", ", columns.Select(e => "@" + e));
             var query = $"insert into {_tableName} ({stringOfColumns}) values ({stringOfParameters})";
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
                 var result = await conn.ExecuteAsync(query, entity);
@@ -33,9 +33,9 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(int id)
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
                 await conn.ExecuteAsync($"DELETE FROM {_tableName} WHERE [Id] = @Id", new { Id = id });
@@ -44,7 +44,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
                 var data = await conn.QueryAsync<T>($"SELECT * FROM {_tableName}");
@@ -52,9 +52,9 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<T> GetByIdAsync(string id)
+        public async Task<T> GetByIdAsync(int id)
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
                 var data = await conn.QueryAsync<T>($"SELECT * FROM {_tableName} WHERE Id = @Id", new { Id = id });
@@ -69,7 +69,7 @@ namespace Infrastructure.Repositories
             if (!string.IsNullOrWhiteSpace(where))
                 query += where;
 
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
                 var data = await conn.QueryAsync<T>(query);
@@ -83,7 +83,7 @@ namespace Infrastructure.Repositories
             var stringOfColumns = string.Join(", ", columns.Select(e => $"{e} = @{e}"));
             var query = $"update {_tableName} set {stringOfColumns} where Id = @Id";
 
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
                 await conn.ExecuteAsync(query, entity);

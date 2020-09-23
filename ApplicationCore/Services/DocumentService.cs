@@ -16,28 +16,42 @@ namespace ApplicationCore.Services
             _documentRepository = documentRepository;
         }
 
-        public async Task SaveDocument(Document document)
+        public async Task SaveDocument(apec_khktdocs_document document)
         {
-            if(!String.IsNullOrEmpty(document.DocumentId))
+            try
             {
-                var entity = await _documentRepository.GetByIdAsync(document.DocumentId).ConfigureAwait(false);
+                if (document.documentid != 0)
+                {
+                    var entity = await _documentRepository.GetByIdAsync(document.documentid).ConfigureAwait(false);
 
-                entity.DocumentTypeId = document.DocumentTypeId;
-                entity.DocumentUrl = document.DocumentUrl;
+                    entity.document_name = document.document_name;
+                    entity.display_name = document.display_name;
+                    entity.document_description = document.document_description;
+                    entity.created_user = document.created_user;
+                    entity.status = document.status;
+                    entity.approve_date = document.approve_date;
+                    entity.document_extension = document.document_extension;
+                    entity.document_folder_id = document.document_folder_id;
+                    entity.modified_date = document.modified_date;
 
-                await _documentRepository.UpdateAsync(entity).ConfigureAwait(false);
+                    await _documentRepository.UpdateAsync(entity).ConfigureAwait(false);
+                }
+
+                await _documentRepository.SaveDocument(document).ConfigureAwait(false);
             }
+            catch (Exception e)
+            {
 
-            document.DocumentId = "SQL_DOCS.NEXTVAL";
-            await _documentRepository.AddAsync(document).ConfigureAwait(false);
+                throw e;
+            }
         }
 
-        public async Task DeleteDocument(string id)
+        public async Task DeleteDocument(int id)
         {
             await _documentRepository.DeleteAsync(id).ConfigureAwait(false);
         }
 
-        public async Task<Document> GetDocumentById(string id)
+        public async Task<apec_khktdocs_document> GetDocumentById(int id)
         {
             var document = await _documentRepository.GetByIdAsync(id).ConfigureAwait(false);
 
@@ -47,8 +61,14 @@ namespace ApplicationCore.Services
             }
             else
             {
-                return new Document();
+                return new apec_khktdocs_document();
             }
+        }
+
+        public async Task<IEnumerable<apec_khktdocs_document>> GetAllDocument()
+        {
+            var lstDocs = await _documentRepository.GetAllAsync().ConfigureAwait(false);
+            return lstDocs;
         }
     }
 }

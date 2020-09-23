@@ -24,22 +24,28 @@
     <div class="content-items whitebg">
         <div class="col-md-12">
             <div class="form-group col-md-6">
-                <span>Mã công việc</span>
-                <input type="text" class="form-control" />
+                <span>Tên tài liệu</span>
+                <input id="doc_name" type="text" class="form-control" />
             </div>
             <div class="form-group col-md-6">
-                <span>Tên file</span>
-                <input type="text" class="form-control" />
+                <span>File</span>
+                <input id="doc_file" type="file" class="form-control" />
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group col-md-6">
                 <span>Loại file</span>
-                <select class="form-control"></select>
+                <select id="doc_extension" class="form-control">
+                    <option value="-1">--- Chọn định dạng file ---</option>
+                    <option value="0">.CAD</option>
+                    <option value="1">.PDF</option>
+                    <option value="2">.JPG</option>
+                    <option value="3">.DOC</option>
+                </select>
             </div>
             <div class="form-group col-md-6">
                 <span>Người phụ trách</span>
-                <select class="form-control"></select>
+                <input id="doc_created" class="form-control"/>
             </div>
         </div>
         <div class="col-md-12">
@@ -49,27 +55,32 @@
             </div>
             <div class="form-group col-md-6">
                 <span>Trạng thái</span>
-                <select class="form-control"></select>
+                <select id="doc_status" class="form-control">
+                    <option value="-1">--- Chọn trạng thái ---</option>
+                    <option value="0">Chờ duyệt</option>
+                    <option value="1">Ban hành</option>
+                </select>
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group col-md-6">
                 <span>Ngày đăng</span>
-                <input type="date" class="form-control" />
+                <input id="doc_created_date" type="date" class="form-control" />
             </div>
             <div class="form-group col-md-6">
-                <span>Mã công việc</span>
-                <input type="text" class="form-control" />
+                <span>Nơi lưu</span>
+                <select id="doc_folder" type="text" class="form-control">
+                </select>
             </div>
         </div>
         <div class="col-md-12">
             <div class="col-md-12">
                 <span>Mô tả</span>
-                <textarea type="" class="form-control" ></textarea>
+                <textarea id="doc_description" type="" class="form-control" ></textarea>
             </div>
          </div>
         <div class="col-md-12 create-button">
-            <button type="submit" class="btn btn-success">Lưu</button>
+            <button id="submitDocs" type="submit" class="btn btn-success">Lưu</button>
             <a href="~/Home/Index" type="button" class="btn btn-danger">Hủy</a>
         </div>
     </div>

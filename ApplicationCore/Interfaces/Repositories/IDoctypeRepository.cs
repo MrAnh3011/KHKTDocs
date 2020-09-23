@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ApplicationCore.Interfaces.Repositories
 {
-    public interface IDoctypeRepository : IGenericRepositoryAsync<DocumentType>
+    public interface IDoctypeRepository : IGenericRepositoryAsync<apec_khktdocs_folder>
     {
 
     }

@@ -8,6 +8,6 @@ namespace ApplicationCore.Interfaces.Services
 {
     public interface IDoctypeService
     {
-        Task<IEnumerable<DocumentType>> GetListDocType();
+        Task<IEnumerable<apec_khktdocs_folder>> GetListDocType();
     }
 }

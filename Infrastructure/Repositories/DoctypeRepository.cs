@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Infrastructure.Repositories
 {
-    public class DoctypeRepository : GenericRepositoryAsync<DocumentType>, IDoctypeRepository
+    public class DoctypeRepository : GenericRepositoryAsync<apec_khktdocs_folder>, IDoctypeRepository
     {
         public DoctypeRepository(IConfiguration configuration) : base(configuration)
         {

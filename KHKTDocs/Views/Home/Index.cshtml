@@ -10,7 +10,7 @@
                     <i class="fa fa-bars"></i> &nbsp; <span>DANH MỤC</span>
                 </div>
                 <div class="treeview-content">
-                    <div class="doctree">
+                    <div id="doctree">
 
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                 <div class="search-fields form">
                     <div class="form-group col-lg-12 col-sm-12">
                         <span>Dự án</span>
-                        <input type="text" class="form-control" />
+                        <select id="doc_folder" class="form-control"></select>
                     </div>
                     <div class="form-group col-lg-6 col-sm-6">
                         <span>Giai đoạn</span>
@@ -53,6 +53,9 @@
                             <option value="3">Ban hành</option>
                         </select>
                     </div>
+                    <button onclick="searchListDocs();" class="btn btn-danger">
+                        <i class="fa fa-search"></i> Tìm kiếm
+                    </button>
                 </div>
             </div>
         </div>
@@ -74,16 +77,16 @@
                     <thead>
                         <tr>
                             <th>STT</th>
-                            <th>Mã VB</th>
-                            <th>Số hiệu VB</th>
-                            <th>Tên tài liệu</th>
-                            <th>Danh mục TL</th>
-                            <th>Mô tả</th>
-                            <th>CQ ban hành</th>
-                            <th>Ngày HL</th>
+                            <th>Tên Tài Liệu</th>
+                            <th>Loại file</th>
+                            <th>Thư mục</th>
+                            <th>Người PT</th>
+                            <th>Nơi nhận</th>
+                            <th>Ngày đăng</th>
+                            <th>Ngày duyệt</th>
                             <th>Trạng thái</th>
                             <th></th>
-                            <th>Mô tả chi tiết</th>
+                            <th>Mô tả</th>
                             <th>DocumentId</th>
                         </tr>
                     </thead>

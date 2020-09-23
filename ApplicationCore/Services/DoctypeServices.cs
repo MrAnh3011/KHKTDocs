@@ -16,7 +16,7 @@ namespace ApplicationCore.Services
         {
             _doctypeRepository = doctypeRepository;
         }
-        public async Task<IEnumerable<DocumentType>> GetListDocType()
+        public async Task<IEnumerable<apec_khktdocs_folder>> GetListDocType()
         {
             var lstDoctype = await _doctypeRepository.GetAllAsync().ConfigureAwait(false);
 
