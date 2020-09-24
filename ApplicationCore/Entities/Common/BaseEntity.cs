@@ -6,6 +6,6 @@ namespace ApplicationCore.Entities.Common
 {
     public abstract class BaseEntity
     {
-        public virtual int Id { get; set; }
+        public virtual int id { get; set; }
     }
 }

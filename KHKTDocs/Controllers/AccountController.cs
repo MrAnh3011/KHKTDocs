@@ -32,10 +32,23 @@ namespace KHKTDocs.Controllers
         [Route("/postusersession")]
         public async Task<IActionResult> PostUserSession(LoginViewModel loginViewModel)
         {
-            ClaimsIdentity _claimsIdentity = new ClaimsIdentity(new[] {
+            ClaimsIdentity _claimsIdentity;
+            if (loginViewModel.Username == "thientt")
+            {
+                _claimsIdentity = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, loginViewModel.DisplayName),
+                    new Claim("UserName", loginViewModel.Username),
+                    new Claim(ClaimTypes.Role, "Admin")
+                }, CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+            else
+            {
+                _claimsIdentity = new ClaimsIdentity(new[] {
+                    new Claim(ClaimTypes.Name, loginViewModel.DisplayName),
+                    new Claim("UserName", loginViewModel.Username),
                     new Claim(ClaimTypes.Role, "User")
-            }, CookieAuthenticationDefaults.AuthenticationScheme);
+                }, CookieAuthenticationDefaults.AuthenticationScheme);
+            }
 
             ClaimsPrincipal _claimsPrincipal = new ClaimsPrincipal(_claimsIdentity);
 

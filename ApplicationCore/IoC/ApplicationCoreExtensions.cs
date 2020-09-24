@@ -13,6 +13,7 @@ namespace ApplicationCore.IoC
         {
             services.AddScoped<IDoctypeService, DoctypeServices>();
             services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

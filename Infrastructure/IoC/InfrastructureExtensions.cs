@@ -15,6 +15,7 @@ namespace Infrastructure.IoC
             services.AddScoped(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
             services.AddScoped<IDoctypeRepository, DoctypeRepository>();
             services.AddScoped<IDocumentRepository, DocumentRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             return services;
         }
     }

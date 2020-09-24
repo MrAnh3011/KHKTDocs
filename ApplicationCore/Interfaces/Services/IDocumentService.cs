@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Entities;
+﻿using ApplicationCore.DTOs;
+using ApplicationCore.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace ApplicationCore.Interfaces.Services
         Task SaveDocument(apec_khktdocs_document document);
         Task DeleteDocument(int id);
         Task<apec_khktdocs_document> GetDocumentById(int id);
-        Task<IEnumerable<apec_khktdocs_document>> GetAllDocument();
+        Task<IEnumerable<DocumentDetailDTO>> GetAllDocument();
+        Task ApproveDocument(int id);
     }
 }

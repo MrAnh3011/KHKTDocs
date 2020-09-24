@@ -11,5 +11,6 @@ namespace ApplicationCore.Entities
         public string parent { get; set; }
         public string text { get; set; }
         public string created_user { get; set; }
+        public string modified_user { get; set; }
     }
 }

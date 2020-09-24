@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.Repositories;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -13,12 +14,24 @@ namespace Infrastructure.Repositories
         {
         }
 
+        public async Task<int> ApproveDocument(int id)
+        {
+            string query = $"UPDATE apec_khktdocs_document a SET a.status = {(int)DocumentStatus.Approved} WHERE a.documentid = :id";
+            using (OracleConnection conn = new OracleConnection(_connectionString))
+            {
+                conn.Open();
+                var result = await conn.ExecuteAsync(query, new { id });
+
+                return result;
+            }
+        }
+
         public async Task<int> SaveDocument(apec_khktdocs_document document)
         {
             try
             {
-                string query = "insert into apec_khktdocs_document (DOCUMENTID, DOCUMENT_NAME, DISPLAY_NAME, DOCUMENT_DESCRIPTION, CREATED_USER, STATUS, CREATED_DATE, DOCUMENT_EXTENSION, DOCUMENT_FOLDER_ID)";
-                query += $"values(SEQ_KHKTDOCS_DOC.NEXTVAL, :DOCUMENT_NAME, :DISPLAY_NAME, :DOCUMENT_DESCRIPTION, :CREATED_USER, :STATUS, :CREATED_DATE, :DOCUMENT_EXTENSION, :DOCUMENT_FOLDER_ID)";
+                string query = "insert into apec_khktdocs_document (DOCUMENTID, DOCUMENT_NAME, DISPLAY_NAME, DOCUMENT_DESCRIPTION, CREATED_USER, STATUS, CREATED_DATE, DOCUMENT_EXTENSION, DOCUMENT_FOLDER_ID, DOCUMENT_RECEIVER)";
+                query += $"values(SEQ_KHKTDOCS_DOC.NEXTVAL, :DOCUMENT_NAME, :DISPLAY_NAME, :DOCUMENT_DESCRIPTION, :CREATED_USER, :STATUS, :CREATED_DATE, :DOCUMENT_EXTENSION, :DOCUMENT_FOLDER_ID, :DOCUMENT_RECEIVER)";
 
                 using (OracleConnection conn = new OracleConnection(_connectionString))
                 {

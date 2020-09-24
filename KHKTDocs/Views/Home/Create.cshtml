@@ -25,7 +25,7 @@
         <div class="col-md-12">
             <div class="form-group col-md-6">
                 <span>Tên tài liệu</span>
-                <input id="doc_name" type="text" class="form-control" />
+                <input id="display_name" type="text" class="form-control" />
             </div>
             <div class="form-group col-md-6">
                 <span>File</span>
@@ -45,20 +45,22 @@
             </div>
             <div class="form-group col-md-6">
                 <span>Người phụ trách</span>
-                <input id="doc_created" class="form-control"/>
+                <select id="doc_created" class="form-control">
+
+                </select>
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group col-md-6">
                 <span>Nơi nhận</span>
-                <input type="text" class="form-control" />
+                <input id="doc_receiver" type="text" class="form-control" />
             </div>
             <div class="form-group col-md-6">
                 <span>Trạng thái</span>
                 <select id="doc_status" class="form-control">
                     <option value="-1">--- Chọn trạng thái ---</option>
-                    <option value="0">Chờ duyệt</option>
-                    <option value="1">Ban hành</option>
+                    <option value="0">Pending</option>
+                    <option value="1">Release</option>
                 </select>
             </div>
         </div>
@@ -85,3 +87,4 @@
         </div>
     </div>
 </div>
+<script src="~/js/Create.js"></script>

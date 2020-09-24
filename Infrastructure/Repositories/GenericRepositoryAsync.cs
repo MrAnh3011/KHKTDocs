@@ -23,7 +23,7 @@ namespace Infrastructure.Repositories
         {
             var columns = GetColumns();
             var stringOfColumns = string.Join(", ", columns);
-            var stringOfParameters = string.Join(", ", columns.Select(e => "@" + e));
+            var stringOfParameters = string.Join(", ", columns.Select(e => ":" + e));
             var query = $"insert into {_tableName} ({stringOfColumns}) values ({stringOfParameters})";
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {
@@ -38,7 +38,7 @@ namespace Infrastructure.Repositories
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
-                await conn.ExecuteAsync($"DELETE FROM {_tableName} WHERE [Id] = @Id", new { Id = id });
+                await conn.ExecuteAsync($"DELETE FROM {_tableName} WHERE [Id] = :Id", new { Id = id });
             }
         }
 
@@ -57,7 +57,7 @@ namespace Infrastructure.Repositories
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
-                var data = await conn.QueryAsync<T>($"SELECT * FROM {_tableName} WHERE Id = @Id", new { Id = id });
+                var data = await conn.QueryAsync<T>($"SELECT * FROM {_tableName} WHERE Id = :Id", new { Id = id });
                 return data.FirstOrDefault();
             }
         }
@@ -80,8 +80,8 @@ namespace Infrastructure.Repositories
         public async Task UpdateAsync(T entity)
         {
             var columns = GetColumns();
-            var stringOfColumns = string.Join(", ", columns.Select(e => $"{e} = @{e}"));
-            var query = $"update {_tableName} set {stringOfColumns} where Id = @Id";
+            var stringOfColumns = string.Join(", ", columns.Select(e => $"{e} = :{e}"));
+            var query = $"update {_tableName} set {stringOfColumns} where Id = :Id";
 
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {

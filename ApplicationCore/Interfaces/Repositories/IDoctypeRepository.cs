@@ -1,12 +1,10 @@
 ﻿using ApplicationCore.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace ApplicationCore.Interfaces.Repositories
 {
     public interface IDoctypeRepository : IGenericRepositoryAsync<apec_khktdocs_folder>
     {
-
+        Task<int> SaveFolder(apec_khktdocs_folder folder);
     }
 }
