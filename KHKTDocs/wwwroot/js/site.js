@@ -222,7 +222,7 @@ function SearchListDocs() {
                     var actionDelete = "<a href='#' class='deleteDoc'><i class='fa fa-trash'></i></a>";
 
                     if (result.role == "Admin") {
-                        var actionApprove = "<a href='#' onclick='ApproveDoc(" + rs[i].documentid + ")' class='deleteDoc'><i class='fa fa-check-circle'> Duyệt</i></a>";
+                        var actionApprove = "<a href='#' onclick='ApproveDoc(" + rs[i].id + ")' class='deleteDoc'><i class='fa fa-check-circle'> Duyệt</i></a>";
                     }
                     else
                         var actionApprove = "";
