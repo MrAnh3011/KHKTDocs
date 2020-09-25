@@ -8,37 +8,35 @@
 
     $("#doctree").jstree({
         "core": {
+            "check_callback": true,
             "data": lstMenu.listMenu
         },
-        "plugins": [
-            "contextmenu", "dnd", "types"
-        ]
+        "plugins": ["contextmenu", "dnd", "types"],
     });
 
-    $("#doctree").on("create_node.jstree", function (e, data) {
-        let model = {
-            id: data.node.id,
-            parent: data.node.parent,
-            action: 'Create'
-        };
-        SaveDocType(model);
+    $("#doctree").on("select_node.jstree", function (e, data) {
+        //console.log(data);
     });
+
     $("#doctree").on("rename_node.jstree", async function (e, data) {
-        let model = {
-            id: data.node.id,
-            parent: data.node.parent,
-            action: 'Rename'
-        };
-        var result = await SaveDocType(model);
-        $("#doctree").jstree(true).set_id(data.node, result);
+        console.log("rename");
+        console.log(data.node);
+        //let model = {
+        //    id: data.node.id,
+        //    parent: data.node.parent,
+        //    action: 'Rename'
+        //};
+        //var result = await SaveDocType(model);
+        //$("#doctree").jstree(true).set_id(data.node, result);
     });
     $("#doctree").on("delete_node.jstree", function (e, data) {
-        let model = {
-            id: data.node.id,
-            parent: data.node.parent,
-            action: 'Delete'
-        };
-        SaveDocType(model);
+        console.log("delete");
+        //let model = {
+        //    id: data.node.id,
+        //    parent: data.node.parent,
+        //    action: 'Delete'
+        //};
+        //SaveDocType(model);
     });
     //#endregion Bind tree data to DocTree and Select
 
