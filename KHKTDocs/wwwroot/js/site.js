@@ -15,7 +15,7 @@
     });
 
     $("#doctree").on("select_node.jstree", function (e, data) {
-        //console.log(data);
+        SearchDocsByFolder(data.node.id);
     });
 
     $("#doctree").on("rename_node.jstree", async function (e, data) {
@@ -89,55 +89,8 @@
             });
     });
     //#endregion Bind data to DataTable
-    SearchListDocs();
+    SearchAllDocs();
 
-    //#region Controls's action
-    $("#submitDocs").click(function () {
-        ShowLoadingScreen();
-        let displayname = $("#display_name").val();
-        let doc_file = $("#doc_file").get(0);
-        let doc_description = $("#doc_description").val();
-        let create_user = $("#doc_created").val();
-        let status = $("#doc_status option:selected").val();
-        let created_date = $("#doc_created_date").val();
-        let doc_folder = $("#doc_folder option:selected").val();
-        let doc_receiver = $("#doc_receiver").val();
-
-        let fileUpload = doc_file.files;
-        let data = new FormData();
-        data.append(fileUpload[0].name, fileUpload[0]);
-        data.append("display_name", displayname);
-        data.append("doc_description", doc_description);
-        data.append("create_user", create_user);
-        data.append("status", status);
-        data.append("created_date", created_date);
-        data.append("doc_folder", doc_folder);
-        data.append("doc_receiver", doc_receiver)
-
-        $.ajax({
-            url: "/Home/CreateDoc",
-            type: "POST",
-            contentType: false,
-            processData: false,
-            data: data,
-            success: function (response) {
-                if (response.status == "success") {
-                    alert("Thêm tài liệu thành công");
-                    HideLoadingScreen();
-                    window.location.href("~/Home/Index");
-                }
-                else {
-                    alert("Lỗi, vui lòng kiểm tra lại.");
-                    HideLoadingScreen();
-                }
-            },
-            error: function (responsse) {
-                HideLoadingScreen();
-                alert("Lỗi, vui lòng kiểm tra lại.")
-            }
-        });
-    });
-    //#endregion Controls's action
 });
 function ShowLoadingScreen() {
     $(".loading-screen").css({ "display": "block" });
@@ -195,72 +148,20 @@ function BindSubMenuSelect(listAll, pItem) {
     return treeItems;
 }
 
-function SearchListDocs() {
+function SearchAllDocs() {
     try {
-        ShowLoadingScreen()
-        //var groupId = $('#group-name').val();
-        //var docName = $('#doc-name').val();
-        //var docType = $('#doc-type').val();
-        //var orgPublish = $('#org-publish').val();
-        //var docContent = $('#doc-content').val();
-
+        ShowLoadingScreen();
         $.ajax({
             url: "/Home/GetListDocuments",
             data: {},
             dataType: "json",
             type: "POST",
             success: function (result) {
-                var table = $('#tbl-docs').DataTable();
-                var rs = result.listDocs;
-                table.clear().draw();
-                for (var i = 0; i < rs.length; i++) {
-                    var displayName = rs[i].display_name;
-                    var actionDown = "";
-                    var actionEdit = "<a href='/Home/Edit/" + rs[i].id + "'><i class='fa fa-edit'></i></a>";
-                    var actionDelete = "<a href='#' class='deleteDoc'><i class='fa fa-trash'></i></a>";
-
-                    if (result.role == "Admin") {
-                        var actionApprove = "<a href='#' onclick='ApproveDoc(" + rs[i].id + ")' class='deleteDoc'><i class='fa fa-check-circle'> Duyệt</i></a>";
-                    }
-                    else
-                        var actionApprove = "";
-
-                    var docName = rs[i].document_name + rs[i].document_extension;
-                    if (docName.includes('.ppt') ||
-                        docName.includes('.pptx') ||
-                        docName.includes('.doc') ||
-                        docName.includes('.docx') ||
-                        docName.includes('.xls') ||
-                        docName.includes('.xlsx')) {
-                        displayName = "<a target='_blank' href='https://view.officeapps.live.com/op/embed.aspx?src=http://http://localhost:54523/uploads/" +
-                            encodeURI(docName) +
-                            "'><i class='fa fa-eye'></i> " + rs[i].display_name + "</a>";
-                    } else if (docName[0].includes('.pdf') || docName[0].includes('.txt')) {
-                        displayName = "<a target='_blank' href='http://http://localhost:54523/uploads/" +
-                            docName[0] +
-                            "'><i class='fa fa-eye'></i> " + rs[i].display_name + "</a>";
-                    }
-                        actionDown = "<a href='/Files/DownloadDoc?fileName=" + rs[i].DocumentName + "'><i class='fa fa-download'></i></a>";
-                    var docName = rs[i].document_name.split(",");
-                    if (docName.length > 1) {
-                        actionDown = "<a href='/Files/DownloadDocZip?fileName=" + rs[i].DocumentName + "'><i class='fa fa-download'></i></a>";
-                    }
-                    table.row.add([
-                        "",
-                        displayName,
-                        rs[i].document_extension,
-                        rs[i].folder_name,
-                        rs[i].created_user,
-                        rs[i].document_receiver,
-                        rs[i].created_date,
-                        rs[i].approve_date,
-                        rs[i].status == "Pending" ? rs[i].status + " " + actionApprove : rs[i].status,
-                        actionEdit + " " + actionDelete + " " + actionDown,
-                        rs[i].document_description,
-                        rs[i].id
-                    ]);
+                if (result.status == "success") {
+                    BindDataToTable(result);
+                } else {
+                    alert(result.message);
                 }
-                table.draw(false);
                 HideLoadingScreen();
             },
             error: function (result) {
@@ -272,6 +173,87 @@ function SearchListDocs() {
         HideLoadingScreen();
         alert(err);
     }
+}
+
+function SearchDocsByFolder(folderId) {
+    try {
+        ShowLoadingScreen();
+        $.ajax({
+            url: "/Home/SearchDocsByFolderId",
+            data: { data: folderId },
+            type: "POST",
+            success: function (result) {
+                if (result.status == "success") {
+                    BindDataToTable(result);
+                }
+                else {
+                    alert(err);
+                }
+                HideLoadingScreen();
+            },
+            error: function (err) {
+                HideLoadingScreen();
+                alert(err);
+            }
+        });
+    } catch (e) {
+        HideLoadingScreen();
+        alert(e);
+    }
+}
+
+function BindDataToTable(result) {
+    var table = $('#tbl-docs').DataTable();
+    var rs = result.listDocs;
+    table.clear().draw();
+    for (var i = 0; i < rs.length; i++) {
+        var displayName = rs[i].display_name;
+        var actionDown = "";
+        var actionEdit = "<a href='/Home/Edit/" + rs[i].id + "'><i class='fa fa-edit'></i></a>";
+        var actionDelete = "<a href='#' class='deleteDoc'><i class='fa fa-trash'></i></a>";
+
+        if (result.role == "Admin") {
+            var actionApprove = "<a href='#' onclick='ApproveDoc(" + rs[i].id + ")' class='deleteDoc'><i class='fa fa-check-circle'> Duyệt</i></a>";
+        }
+        else
+            var actionApprove = "";
+
+        var docName = rs[i].document_name + rs[i].document_extension;
+        if (docName.includes('.ppt') ||
+            docName.includes('.pptx') ||
+            docName.includes('.doc') ||
+            docName.includes('.docx') ||
+            docName.includes('.xls') ||
+            docName.includes('.xlsx')) {
+            displayName = "<a target='_blank' href='https://view.officeapps.live.com/op/embed.aspx?src=http://http://localhost:54523/uploads/" +
+                encodeURI(docName) +
+                "'><i class='fa fa-eye'></i> " + rs[i].display_name + "</a>";
+        } else if (docName[0].includes('.pdf') || docName[0].includes('.txt')) {
+            displayName = "<a target='_blank' href='http://http://localhost:54523/uploads/" +
+                docName[0] +
+                "'><i class='fa fa-eye'></i> " + rs[i].display_name + "</a>";
+        }
+        actionDown = "<a href='/Files/DownloadDoc?fileName=" + rs[i].DocumentName + "'><i class='fa fa-download'></i></a>";
+        var docName = rs[i].document_name.split(",");
+        if (docName.length > 1) {
+            actionDown = "<a href='/Files/DownloadDocZip?fileName=" + rs[i].DocumentName + "'><i class='fa fa-download'></i></a>";
+        }
+        table.row.add([
+            "",
+            displayName,
+            rs[i].document_extension,
+            rs[i].folder_name,
+            rs[i].created_user,
+            rs[i].document_receiver,
+            rs[i].created_date,
+            rs[i].approve_date,
+            rs[i].status == "Pending" ? rs[i].status + " " + actionApprove : rs[i].status,
+            actionEdit + " " + actionDelete + " " + actionDown,
+            rs[i].document_description,
+            rs[i].id
+        ]);
+    }
+    table.draw(false);
 }
 
 function SaveDocType(model) {

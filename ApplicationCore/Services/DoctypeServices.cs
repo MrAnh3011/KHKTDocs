@@ -3,7 +3,7 @@ using ApplicationCore.Interfaces.Repositories;
 using ApplicationCore.Interfaces.Services;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ApplicationCore.Services
@@ -20,6 +20,25 @@ namespace ApplicationCore.Services
         public async Task DeleteFolder(int id)
         {
             await _doctypeRepository.DeleteAsync(id);
+        }
+
+        public async Task<IEnumerable<apec_khktdocs_folder>> GetChildFoldersById(string id)
+        {
+            List<apec_khktdocs_folder> lst = new List<apec_khktdocs_folder>();
+
+            string where = $"where parent = '{id}'";
+            var lstFolders = await _doctypeRepository.SelectQuery(where);
+            if (lstFolders.Count() != 0)
+            {
+                foreach (var item in lstFolders)
+                {
+                    lst.AddRange(await GetChildFoldersById(item.id.ToString()));
+                }
+            }
+            var folder = await _doctypeRepository.GetByIdAsync(int.Parse(id));
+            lst.Add(folder);
+
+            return lst;
         }
 
         public async Task<IEnumerable<apec_khktdocs_folder>> GetListDocType()

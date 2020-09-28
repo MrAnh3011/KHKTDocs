@@ -24,30 +24,23 @@
     <div class="content-items whitebg">
         <div class="col-md-12">
             <div class="form-group col-md-6">
-                <span>Tên tài liệu</span>
-                <input id="display_name" type="text" class="form-control" />
-            </div>
-            <div class="form-group col-md-6">
-                <span>File</span>
-                <input id="doc_file" type="file" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group col-md-6">
-                <span>Loại file</span>
-                <select id="doc_extension" class="form-control">
-                    <option value="-1">--- Chọn định dạng file ---</option>
-                    <option value="0">.CAD</option>
-                    <option value="1">.PDF</option>
-                    <option value="2">.JPG</option>
-                    <option value="3">.DOC</option>
+                <span>Nơi lưu</span>
+                <select id="doc_folder" type="text" class="form-control">
                 </select>
             </div>
             <div class="form-group col-md-6">
                 <span>Người phụ trách</span>
-                <select id="doc_created" class="form-control">
-
-                </select>
+                <select id="doc_created" class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group col-md-6">
+                <span>Cơ quan ban hành</span>
+                <input id="doc_organization" type="text" class="form-control" />
+            </div>
+            <div class="form-group col-md-6">
+                <span>Ngày đăng</span>
+                <input id="doc_created_date" type="date" class="form-control" />
             </div>
         </div>
         <div class="col-md-12">
@@ -56,23 +49,22 @@
                 <input id="doc_receiver" type="text" class="form-control" />
             </div>
             <div class="form-group col-md-6">
-                <span>Trạng thái</span>
-                <select id="doc_status" class="form-control">
-                    <option value="-1">--- Chọn trạng thái ---</option>
-                    <option value="0">Pending</option>
-                    <option value="1">Release</option>
-                </select>
+                <span>Giai đoạn</span>
+                <input id="display_name" type="text" class="form-control" />
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group col-md-6">
-                <span>Ngày đăng</span>
-                <input id="doc_created_date" type="date" class="form-control" />
+                <span>Trạng thái</span>
+                <select id="doc_status" class="form-control">
+                    <option value="-1">--- Chọn trạng thái ---</option>
+                    <option value="0">Chờ duyệt</option>
+                    <option value="1">Ban hành</option>
+                </select>
             </div>
             <div class="form-group col-md-6">
-                <span>Nơi lưu</span>
-                <select id="doc_folder" type="text" class="form-control">
-                </select>
+                <span>File</span>
+                <input id="doc_file" type="file" class="form-control-file" />
             </div>
         </div>
         <div class="col-md-12">
@@ -87,7 +79,6 @@
         </div>
     </div>
 </div>
-@*<script src="~/js/Create.js"></script>*@
 @section Scripts {
     <script src="~/js/Create.js"></script>
 }

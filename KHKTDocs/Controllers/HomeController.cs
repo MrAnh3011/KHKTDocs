@@ -121,10 +121,36 @@ namespace KHKTDocs.Controllers
         {
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
             var role = currentUser.Claims.First(x => x.Type == System.Security.Claims.ClaimTypes.Role).Value;
-            var lstDocs = await _documentService.GetAllDocument();
+            var listDocs = await _documentService.GetAllDocument();
 
-            return Json(new { status = "success", message = "success !", ListDocs = lstDocs, role });
+            return Json(new { status = "success", message = "success !", listDocs, role });
         }
+        public async Task<JsonResult> SearchDocsByFolderId(TempModel model)
+        {
+            try
+            {
+                System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+                var role = currentUser.Claims.First(x => x.Type == System.Security.Claims.ClaimTypes.Role).Value;
+                var listDocs = await _documentService.GetDocsByFolderId(model.data);
+
+                return Json(new { status = "success", message = "success !", listDocs, role });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = "fail", message = e });
+            }
+        }
+        //public async Task<JsonResult> SearchDocsByCondition()
+        //{
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Json(new { status = "fail", message = e });
+        //    }
+        //}
 
         public async Task<JsonResult> FolderEvents(FolderViewModel folderViewModel)
         {
@@ -180,17 +206,24 @@ namespace KHKTDocs.Controllers
 
         public async Task<JsonResult> ApproveDoc(TempModel model)
         {
-            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
-            var role = currentUser.Claims.First(x => x.Type == System.Security.Claims.ClaimTypes.Role).Value;
+            try
+            {
+                System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+                var role = currentUser.Claims.First(x => x.Type == System.Security.Claims.ClaimTypes.Role).Value;
 
-            if(role != "Admin")
-            {
-                return Json(new { status = "fail", message = " Duyệt không thành công! \n Không có quyền duyệt!"});
+                if (role != "Admin")
+                {
+                    return Json(new { status = "fail", message = " Duyệt không thành công! \n Không có quyền duyệt!" });
+                }
+                else
+                {
+                    await _documentService.ApproveDocument(int.Parse(model.data));
+                    return Json(new { status = "success", message = "success !" });
+                }
             }
-            else
+            catch (Exception e)
             {
-                await _documentService.ApproveDocument(int.Parse(model.data));
-                return Json(new { status = "success", message = "success !"});
+                return Json(new { status = "fail", message = e });
             }
         }
 

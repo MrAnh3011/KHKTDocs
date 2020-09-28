@@ -12,5 +12,6 @@ namespace ApplicationCore.Interfaces.Services
         Task<apec_khktdocs_document> GetDocumentById(int id);
         Task<IEnumerable<DocumentDetailDTO>> GetAllDocument();
         Task ApproveDocument(int id);
+        Task<IEnumerable<DocumentDetailDTO>> GetDocsByFolderId(string id);
     }
 }

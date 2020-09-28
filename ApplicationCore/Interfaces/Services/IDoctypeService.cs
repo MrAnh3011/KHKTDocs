@@ -11,5 +11,6 @@ namespace ApplicationCore.Interfaces.Services
         Task<IEnumerable<apec_khktdocs_folder>> GetListDocType();
         Task<int> SaveFolder(apec_khktdocs_folder folder);
         Task DeleteFolder(int id);
+        Task<IEnumerable<apec_khktdocs_folder>> GetChildFoldersById(string id);
     }
 }

@@ -5,6 +5,7 @@ using ApplicationCore.Interfaces.Repositories;
 using ApplicationCore.Interfaces.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,11 +17,14 @@ namespace ApplicationCore.Services
         private readonly IDocumentRepository _documentRepository;
         private readonly IUserRepository _userRepository;
         private readonly IDoctypeRepository _doctypeRepository;
-        public DocumentService(IDocumentRepository documentRepository, IUserRepository userRepository, IDoctypeRepository doctypeRepository)
+        private readonly IDoctypeService _doctypeService;
+        public DocumentService(IDocumentRepository documentRepository, IUserRepository userRepository,
+            IDoctypeRepository doctypeRepository, IDoctypeService doctypeService)
         {
             _documentRepository = documentRepository;
             _userRepository = userRepository;
             _doctypeRepository = doctypeRepository;
+            _doctypeService = doctypeService;
         }
 
         public async Task SaveDocument(apec_khktdocs_document document)
@@ -105,6 +109,50 @@ namespace ApplicationCore.Services
         public async Task ApproveDocument(int id)
         {
             await _documentRepository.ApproveDocument(id).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<DocumentDetailDTO>> GetDocsByFolderId(string id)
+        {
+            var result = (await _doctypeService.GetChildFoldersById(id).ConfigureAwait(false));
+            List<DocumentDetailDTO> lstDocs = new List<DocumentDetailDTO>();
+
+            if (result.Count() != 0)
+            {
+                foreach (var itemFolder in result)
+                {
+                    string where = $"where DOCUMENT_FOLDER_ID = {itemFolder.id}";
+                    var tmpLst = await _documentRepository.SelectQuery(where).ConfigureAwait(false);
+
+                    if(tmpLst.Count() != 0)
+                    {
+                        List<DocumentDetailDTO> subList = new List<DocumentDetailDTO>();
+                        foreach (var itemDoc in tmpLst)
+                        {
+                            var username = await _userRepository.GetUsersByUserName(itemDoc.created_user).ConfigureAwait(false);
+                            var foldername = await _doctypeRepository.GetByIdAsync(itemDoc.document_folder_id).ConfigureAwait(false);
+
+                            var tmpDocs = new DocumentDetailDTO
+                            {
+                                id = itemDoc.id,
+                                document_name = itemDoc.document_name,
+                                document_description = itemDoc.document_description,
+                                document_extension = itemDoc.document_extension,
+                                created_user = username.display_name,
+                                created_date = itemDoc.created_date,
+                                approve_date = itemDoc.approve_date,
+                                folder_name = foldername.text,
+                                display_name = itemDoc.display_name,
+                                status = ((DocumentStatus)itemDoc.status).ToString(),
+                                document_receiver = itemDoc.document_receiver
+                            };
+                            subList.Add(tmpDocs);
+                        }
+                        lstDocs.AddRange(subList);
+                    }
+                }
+            }
+
+            return lstDocs;
         }
     }
 }
