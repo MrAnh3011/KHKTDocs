@@ -1,13 +1,10 @@
 ﻿using ApplicationCore.DTOs;
 using ApplicationCore.Entities;
-using ApplicationCore.Enums;
 using ApplicationCore.Interfaces.Repositories;
 using ApplicationCore.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.WebSockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ApplicationCore.Services
@@ -36,7 +33,7 @@ namespace ApplicationCore.Services
                     var entity = await _documentRepository.GetByIdAsync(document.id).ConfigureAwait(false);
 
                     entity.document_name = document.document_name;
-                    entity.display_name = document.display_name;
+                    entity.stage = document.stage;
                     entity.document_description = document.document_description;
                     entity.created_user = document.created_user;
                     entity.status = document.status;
@@ -45,6 +42,7 @@ namespace ApplicationCore.Services
                     entity.document_folder_id = document.document_folder_id;
                     entity.modified_date = document.modified_date;
                     entity.document_receiver = document.document_receiver;
+                    entity.document_agency = document.document_agency;
 
                     await _documentRepository.UpdateAsync(entity).ConfigureAwait(false);
                 }
@@ -97,9 +95,10 @@ namespace ApplicationCore.Services
                     created_date = item.created_date,
                     approve_date = item.approve_date,
                     folder_name = foldername.text,
-                    display_name = item.display_name,
-                    status = ((DocumentStatus)item.status).ToString(),
-                    document_receiver = item.document_receiver
+                    stage = item.stage,
+                    status = GetDocDesEnum(item.status),
+                    document_receiver = item.document_receiver,
+                    document_agency = item.document_agency
                 };
                 lstDocDTO.Add(itemDocs);
             }
@@ -123,7 +122,7 @@ namespace ApplicationCore.Services
                     string where = $"where DOCUMENT_FOLDER_ID = {itemFolder.id}";
                     var tmpLst = await _documentRepository.SelectQuery(where).ConfigureAwait(false);
 
-                    if(tmpLst.Count() != 0)
+                    if (tmpLst.Count() != 0)
                     {
                         List<DocumentDetailDTO> subList = new List<DocumentDetailDTO>();
                         foreach (var itemDoc in tmpLst)
@@ -141,9 +140,10 @@ namespace ApplicationCore.Services
                                 created_date = itemDoc.created_date,
                                 approve_date = itemDoc.approve_date,
                                 folder_name = foldername.text,
-                                display_name = itemDoc.display_name,
-                                status = ((DocumentStatus)itemDoc.status).ToString(),
-                                document_receiver = itemDoc.document_receiver
+                                stage = itemDoc.stage,
+                                status = GetDocDesEnum(itemDoc.status),
+                                document_receiver = itemDoc.document_receiver,
+                                document_agency = itemDoc.document_agency
                             };
                             subList.Add(tmpDocs);
                         }
@@ -153,6 +153,52 @@ namespace ApplicationCore.Services
             }
 
             return lstDocs;
+        }
+
+        public async Task<IEnumerable<DocumentDetailDTO>> GetDocsByConditions(SearchConditionsDTO model)
+        {
+            try
+            {
+                List<DocumentDetailDTO> lstDocs = (await GetDocsByFolderId(model.docfolder)).ToList();
+
+                if (!string.IsNullOrEmpty(model.stage))
+                    lstDocs = lstDocs.Where(x => x.stage == model.stage).ToList();
+                if (!string.IsNullOrEmpty(model.doctype))
+                    lstDocs = lstDocs.Where(x => x.document_extension.Contains(model.doctype)).ToList();
+                if (!string.IsNullOrEmpty(model.docagency))
+                    lstDocs = lstDocs.Where(x => x.document_agency.Contains(model.docagency)).ToList();
+                if (model.status != "All")
+                    lstDocs = lstDocs.Where(x => x.status.Contains(model.status)).ToList();
+
+                return lstDocs;
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+        }
+
+        private string GetDocDesEnum(int status)
+        {
+            string result;
+            switch (status)
+            {
+                case 0:
+                    result = "Ban hành";
+                    break;
+                case 1:
+                    result = "Chờ duyệt";
+                    break;
+                case 2:
+                    result = "Đã duyệt";
+                    break;
+                default:
+                    result = "Lỗi";
+                    break;
+            }
+            return result;
         }
     }
 }

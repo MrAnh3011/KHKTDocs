@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
 
         public async Task<int> ApproveDocument(int id)
         {
-            string query = $"UPDATE apec_khktdocs_document a SET a.status = {(int)DocumentStatus.Approved} WHERE a.documentid = :id";
+            string query = $"UPDATE apec_khktdocs_document a SET a.status = {(int)DocumentStatus.Approved} WHERE a.id = :id";
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
@@ -31,8 +31,8 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                string query = "insert into apec_khktdocs_document (DOCUMENTID, DOCUMENT_NAME, DISPLAY_NAME, DOCUMENT_DESCRIPTION, CREATED_USER, STATUS, CREATED_DATE, DOCUMENT_EXTENSION, DOCUMENT_FOLDER_ID, DOCUMENT_RECEIVER)";
-                query += $"values(SEQ_KHKTDOCS_DOC.NEXTVAL, :DOCUMENT_NAME, :DISPLAY_NAME, :DOCUMENT_DESCRIPTION, :CREATED_USER, :STATUS, :CREATED_DATE, :DOCUMENT_EXTENSION, :DOCUMENT_FOLDER_ID, :DOCUMENT_RECEIVER)";
+                string query = "insert into apec_khktdocs_document (ID, DOCUMENT_NAME, STAGE, DOCUMENT_DESCRIPTION, CREATED_USER, STATUS, CREATED_DATE, DOCUMENT_EXTENSION, DOCUMENT_FOLDER_ID, DOCUMENT_RECEIVER, DOCUMENT_AGENCY)";
+                query += $"values(SEQ_KHKTDOCS_DOC.NEXTVAL, :DOCUMENT_NAME, :STAGE, :DOCUMENT_DESCRIPTION, :CREATED_USER, :STATUS, :CREATED_DATE, :DOCUMENT_EXTENSION, :DOCUMENT_FOLDER_ID, :DOCUMENT_RECEIVER, :DOCUMENT_AGENCY)";
 
                 using (OracleConnection conn = new OracleConnection(_connectionString))
                 {

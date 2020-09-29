@@ -5,6 +5,10 @@
         }
     });
 
+    $("#btnLogin").click(function () {
+        UserLogin();
+    });
+
     function ShowLoadingScreen() {
         $(".loading-screen").css({ "display": "block" });
     }

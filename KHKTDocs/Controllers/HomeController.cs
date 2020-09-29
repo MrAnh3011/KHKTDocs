@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Entities;
+﻿using ApplicationCore.DTOs;
+using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.Services;
 using KHKTDocs.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -49,13 +50,14 @@ namespace KHKTDocs.Controllers
             try
             {
                 IFormFile file = Request.Form.Files.First();
-                string display_name = Request.Form["display_name"].ToString();
+                string stage = Request.Form["stage"].ToString();
                 string doc_description = Request.Form["doc_description"].ToString();
                 string create_user = Request.Form["create_user"].ToString();
                 string status = Request.Form["status"].ToString();
                 string created_date = Request.Form["created_date"].ToString();
                 string doc_folder = Request.Form["doc_folder"].ToString();
                 string doc_receiver = Request.Form["doc_receiver"].ToString();
+                string doc_agency = Request.Form["doc_agency"].ToString();
 
                 var memoryStream = new MemoryStream();
                 file.OpenReadStream().CopyTo(memoryStream);
@@ -69,7 +71,7 @@ namespace KHKTDocs.Controllers
 
                 apec_khktdocs_document document = new apec_khktdocs_document
                 {
-                    display_name = display_name,
+                    stage = stage,
                     document_description = doc_description,
                     document_extension = Path.GetExtension(file.FileName),
                     document_name = Path.GetFileNameWithoutExtension(file.FileName),
@@ -77,7 +79,8 @@ namespace KHKTDocs.Controllers
                     created_user = create_user,
                     created_date = Convert.ToDateTime(created_date),
                     status = int.Parse(status),
-                    document_receiver = doc_receiver
+                    document_receiver = doc_receiver,
+                    document_agency = doc_agency
                 };
                 await _documentService.SaveDocument(document);
             }
@@ -140,17 +143,22 @@ namespace KHKTDocs.Controllers
                 return Json(new { status = "fail", message = e });
             }
         }
-        //public async Task<JsonResult> SearchDocsByCondition()
-        //{
-        //    try
-        //    {
 
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return Json(new { status = "fail", message = e });
-        //    }
-        //}
+        [HttpPost]
+        public async Task<JsonResult> SearchByConditions([FromBody] SearchConditionsDTO model)
+        {
+            try
+            {
+                System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+                var role = currentUser.Claims.First(x => x.Type == System.Security.Claims.ClaimTypes.Role).Value;
+                var listDocs = await _documentService.GetDocsByConditions(model);
+                return Json(new { status = "success", message = "success !", listDocs, role });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = "fail", message = e });
+            }
+        }
 
         public async Task<JsonResult> FolderEvents(FolderViewModel folderViewModel)
         {

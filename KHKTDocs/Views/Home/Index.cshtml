@@ -28,32 +28,26 @@
                     </div>
                     <div class="form-group col-lg-6 col-sm-6">
                         <span>Giai đoạn</span>
-                        <input type="text" class="form-control" />
+                        <input id="doc-stage" type="text" class="form-control" />
                     </div>
                     <div class="form-group col-lg-6 col-sm-6">
                         <span>Loại file</span>
-                        <select class="form-control">
-                            <option value="-1">Tất cả</option>
-                            <option value="1">.CAD</option>
-                            <option value="2">.PDF</option>
-                            <option value="3">.JPG</option>
-                            <option value="4">.DOC</option>
-                        </select>
+                        <input id="doc-type" type="text" class="form-control" />
                     </div>
                     <div class="form-group col-lg-6 col-sm-6">
                         <span>Cơ quan ban hành</span>
-                        <input class="form-control" />
+                        <input id="doc-agency" class="form-control" />
                     </div>
                     <div class="form-group col-lg-6 col-sm-6">
                         <span>Trạng thái</span>
-                        <select class="form-control">
+                        <select id="doc-status" class="form-control">
                             <option value="-1">All</option>
                             <option value="1">Chờ duyệt</option>
                             <option value="2">Đã duyệt</option>
                             <option value="3">Ban hành</option>
                         </select>
                     </div>
-                    <button onclick="searchListDocs();" class="btn btn-danger">
+                    <button id="btnSearchDocs" class="btn btn-danger">
                         <i class="fa fa-search"></i> Tìm kiếm
                     </button>
                 </div>

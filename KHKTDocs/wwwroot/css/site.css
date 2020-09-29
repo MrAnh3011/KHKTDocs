@@ -5,6 +5,7 @@ body {
     background: url(../images/background.jpg);
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed;
 }
 
 a .navbar-brand {
@@ -14,7 +15,7 @@ a .navbar-brand {
 }
 
 .text-red {
-    color: #E26A6A;
+    color: #dc3545;
 }
 .whitebg{
     background: #FFF;
@@ -102,12 +103,14 @@ header nav a:first-child {
 header nav a:last-child {
     color: #fff;
     padding: 5px;
+    border: 1px solid rgb(225,225,225,0);
 }
 
 header nav a:last-child:hover {
     color: #fff;
     text-decoration: none;
-    background: #666;
+    border: 1px solid #eee;
+    border-radius: 5px;
 }
 
 header nav a:last-child i {
@@ -118,6 +121,7 @@ header nav a:last-child i {
 /* Sticky main styles
 -------------------------------------------------- */
 .docmanage-content {
+    overflow: hidden;
     margin-top: 20px;
 }
 
@@ -135,7 +139,7 @@ header nav a:last-child i {
 }
 
 .docmanage-content .docitem-title {
-    color: #E26A6A;
+    color: #dc3545;
     font-size: 17px;
     font-weight: bold;
     padding-bottom: 5px;
@@ -199,6 +203,15 @@ header nav a:last-child i {
     border-bottom: none;
 }
 
+.docmanage-content .doclist .doc-grid table tbody tr td:last-child {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.docmanage-content .doclist .doc-grid table tbody tr td i {
+    font-size: 18px;
+}
+
 .create-doc-title {
     margin-top: 20px;
     padding-left: 20px;
@@ -210,12 +223,9 @@ header nav a:last-child i {
     font-size: 14px;
 }
 
-.page-bar {
-    background: #eee;
-}
-
 .page-bar ul {
-    padding: 10px 0px 10px 20px;
+    padding: 10px 0px 10px 40px;
+    color: #fff;
 }
 
 .page-bar ul li {
@@ -223,8 +233,12 @@ header nav a:last-child i {
 }
 
 .page-bar ul li a {
-    color : #000;
+    color : #fff;
     text-decoration: none;
+}
+
+.create-content {
+    overflow: hidden;
 }
 
 .create-content .content-items {
@@ -286,9 +300,9 @@ body {
 }
 
 .footer {
-    bottom: 0;
-    position: absolute;
+    margin: 20px 0px 5px 0px;
     width: 100%;
     white-space: nowrap;
     text-align: center;
+    color: #adb5bd !important
 }

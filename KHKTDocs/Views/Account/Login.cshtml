@@ -1,6 +1,4 @@
-﻿@model KHKTDocs.Models.LoginViewModel
-
-@{
+﻿@{
     Layout = null;
     ViewBag.Title = "Đăng nhập";
 }
@@ -21,15 +19,13 @@
     </div>
     <div class="wrapper fadeInDown">
         <div id="formContent">
-
             <div class="fadeIn first">
                 <img src="~/images/anhpt.png" id="icon" alt="User Icon" />
                 <h1>Apec Docs</h1>
             </div>
-
             <input type="text" id="userName" class="fadeIn second" name="userName" placeholder="User Name">
             <input type="password" id="password" class="fadeIn third" name="password" placeholder="Password">
-            <input type="submit" class="fadeIn fourth" value="Log In">
+            <input type="submit" id="btnLogin" class="fadeIn fourth" value="Log In">
         </div>
         <div class="credit">
             © Created by AnhPT

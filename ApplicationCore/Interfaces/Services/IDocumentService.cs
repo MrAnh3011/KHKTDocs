@@ -13,5 +13,6 @@ namespace ApplicationCore.Interfaces.Services
         Task<IEnumerable<DocumentDetailDTO>> GetAllDocument();
         Task ApproveDocument(int id);
         Task<IEnumerable<DocumentDetailDTO>> GetDocsByFolderId(string id);
+        Task<IEnumerable<DocumentDetailDTO>> GetDocsByConditions(SearchConditionsDTO model);
     }
 }

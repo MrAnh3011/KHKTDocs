@@ -26,7 +26,7 @@ $.ajax({
 
 $("#submitDocs").click(function () {
     ShowLoadingScreen();
-    let displayname = $("#display_name").val();
+    let stage = $("#doc_stage").val();
     let doc_file = $("#doc_file").get(0);
     let doc_description = $("#doc_description").val();
     let create_user = $("#doc_created").val();
@@ -34,17 +34,19 @@ $("#submitDocs").click(function () {
     let created_date = $("#doc_created_date").val();
     let doc_folder = $("#doc_folder option:selected").val();
     let doc_receiver = $("#doc_receiver").val();
+    let doc_agency = $("#doc_agency").val();
 
     let fileUpload = doc_file.files;
     let data = new FormData();
     data.append(fileUpload[0].name, fileUpload[0]);
-    data.append("display_name", displayname);
+    data.append("stage", stage);
     data.append("doc_description", doc_description);
     data.append("create_user", create_user);
     data.append("status", status);
     data.append("created_date", created_date);
     data.append("doc_folder", doc_folder);
-    data.append("doc_receiver", doc_receiver)
+    data.append("doc_receiver", doc_receiver);
+    data.append("doc_agency", doc_agency);
 
     $.ajax({
         url: "/Home/CreateDoc",

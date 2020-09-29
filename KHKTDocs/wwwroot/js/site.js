@@ -91,6 +91,41 @@
     //#endregion Bind data to DataTable
     SearchAllDocs();
 
+    $("#btnSearchDocs").click(function () {
+        ShowLoadingScreen();
+        let doc_folder = $("#doc_folder option:selected").val();
+        let stage = $("#doc-stage").val();
+        let doc_type = $("#doc-type").val();
+        let doc_agency = $("#doc-agency").val();
+        let status = $("#doc-status option:selected").text();
+
+        let searchInfo = JSON.stringify({
+            docfolder: doc_folder,
+            stage: stage,
+            doctype: doc_type,
+            docagency: doc_agency,
+            status: status
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/SearchByConditions",
+            data: searchInfo,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                if (response.status == "success") {
+                    BindDataToTable(response);
+                } else {
+                    alert("Something went wrong");
+                }
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+        HideLoadingScreen();
+    });
 });
 function ShowLoadingScreen() {
     $(".loading-screen").css({ "display": "block" });
@@ -207,13 +242,12 @@ function BindDataToTable(result) {
     var rs = result.listDocs;
     table.clear().draw();
     for (var i = 0; i < rs.length; i++) {
-        var displayName = rs[i].display_name;
+        var displayName = rs[i].document_name;
         var actionDown = "";
-        var actionEdit = "<a href='/Home/Edit/" + rs[i].id + "'><i class='fa fa-edit'></i></a>";
         var actionDelete = "<a href='#' class='deleteDoc'><i class='fa fa-trash'></i></a>";
 
         if (result.role == "Admin") {
-            var actionApprove = "<a href='#' onclick='ApproveDoc(" + rs[i].id + ")' class='deleteDoc'><i class='fa fa-check-circle'> Duyệt</i></a>";
+            var actionApprove = "<a href='#' onclick='ApproveDoc(" + rs[i].id + ")' class='deleteDoc'><i class='fa fa-check-circle'></i> Duyệt</a>";
         }
         else
             var actionApprove = "";
@@ -227,17 +261,14 @@ function BindDataToTable(result) {
             docName.includes('.xlsx')) {
             displayName = "<a target='_blank' href='https://view.officeapps.live.com/op/embed.aspx?src=http://http://localhost:54523/uploads/" +
                 encodeURI(docName) +
-                "'><i class='fa fa-eye'></i> " + rs[i].display_name + "</a>";
+                "'><i class='fa fa-eye'></i> " + rs[i].document_name + "</a>";
         } else if (docName[0].includes('.pdf') || docName[0].includes('.txt')) {
             displayName = "<a target='_blank' href='http://http://localhost:54523/uploads/" +
                 docName[0] +
                 "'><i class='fa fa-eye'></i> " + rs[i].display_name + "</a>";
         }
         actionDown = "<a href='/Files/DownloadDoc?fileName=" + rs[i].DocumentName + "'><i class='fa fa-download'></i></a>";
-        var docName = rs[i].document_name.split(",");
-        if (docName.length > 1) {
-            actionDown = "<a href='/Files/DownloadDocZip?fileName=" + rs[i].DocumentName + "'><i class='fa fa-download'></i></a>";
-        }
+
         table.row.add([
             "",
             displayName,
@@ -247,8 +278,8 @@ function BindDataToTable(result) {
             rs[i].document_receiver,
             rs[i].created_date,
             rs[i].approve_date,
-            rs[i].status == "Pending" ? rs[i].status + " " + actionApprove : rs[i].status,
-            actionEdit + " " + actionDelete + " " + actionDown,
+            rs[i].status == "Chờ duyệt" ? rs[i].status + "<br>" + actionApprove : rs[i].status,
+            actionDelete + "&emsp;" + actionDown,
             rs[i].document_description,
             rs[i].id
         ]);
@@ -278,7 +309,7 @@ function ApproveDoc(id) {
         type: "POST",
         success: function (result) {
             if (result.status == "success") {
-                SearchListDocs();
+                SearchAllDocs();
                 alert("Duyệt thành công");
             }
             else {
