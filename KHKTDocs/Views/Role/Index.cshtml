@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Role Page";
+}
+
+<div class="container-fluid docmanage-content">
+    <div class="col-md-12 pad">
+        <div class="doclist whitebg">
+            <div class="docitem-title">
+                <div class="grid-title-name">
+                    <i class="fa fa-list"></i> &nbsp; <span>DANH SÁCH TÀI KHOẢN</span>
+                </div>
+                <div class="grid-button">
+                    <a href="#" class="" data-toggle="modal" data-target="#modalAdd">
+                        <i class="fa fa-plus"></i> Thêm mới
+                    </a>
+                </div>
+            </div>
+            <div class="doc-grid form">
+                <table id="tbl-docs" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>User Name</th>
+                            <th>Tên đầy đủ</th>
+                            <th>Quyền truy cập</th>
+                            <th>Quyền phê duyệt</th>
+                            <th>Quyền xoá</th>
+                            <th>Quyền Admin</th>
+                            <th></th>
+                            <th>roleId</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modalAdd" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Thêm/Sửa tài khoản</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <span>Tài khoản</span>
+                                <select id="doc_created" class="form-control"></select>
+                            </div>
+                            <div class="d-flex flex-row mt-2 justify-content-around">
+                                <div class="form-check">
+                                    <input type="checkbox" />
+                                    <span> Quyền truy cập</span>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" />
+                                    <span> Quyền phê duyệt</span>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" />
+                                    <span> Quyền xoá</span>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" />
+                                    <span class="text-danger"> Quyền Admin</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-success">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

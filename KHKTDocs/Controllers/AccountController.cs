@@ -28,6 +28,11 @@ namespace KHKTDocs.Controllers
             return RedirectToAction("Login");
         }
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         [HttpPost]
         [Route("/postusersession")]
         public async Task<IActionResult> PostUserSession(LoginViewModel loginViewModel)
