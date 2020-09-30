@@ -12,6 +12,9 @@
             "data": lstMenu.listMenu
         },
         "plugins": ["contextmenu", "dnd", "types"],
+        "contextmenu": {
+            "select_node" : false
+        }
     });
 
     $("#doctree").on("select_node.jstree", function (e, data) {
@@ -20,23 +23,23 @@
 
     $("#doctree").on("rename_node.jstree", async function (e, data) {
         console.log("rename");
-        console.log(data.node);
-        //let model = {
-        //    id: data.node.id,
-        //    parent: data.node.parent,
-        //    action: 'Rename'
-        //};
-        //var result = await SaveDocType(model);
-        //$("#doctree").jstree(true).set_id(data.node, result);
+        let model = {
+            id: data.node.id,
+            parent: data.node.parent,
+            text: data.node.text,
+            action: data.node.id.includes("j") ? "Create" : "Rename"
+        };
+        var result = await SaveDocType(model);
+        $("#doctree").jstree(true).set_id(data.node, result.result);
     });
     $("#doctree").on("delete_node.jstree", function (e, data) {
         console.log("delete");
-        //let model = {
-        //    id: data.node.id,
-        //    parent: data.node.parent,
-        //    action: 'Delete'
-        //};
-        //SaveDocType(model);
+        let model = {
+            id: data.node.id,
+            parent: data.node.parent,
+            action: 'Delete'
+        };
+        SaveDocType(model);
     });
     //#endregion Bind tree data to DocTree and Select
 
@@ -116,15 +119,18 @@
             success: function (response) {
                 if (response.status == "success") {
                     BindDataToTable(response);
+                    HideLoadingScreen();
                 } else {
                     alert("Something went wrong");
+                    HideLoadingScreen();
                 }
             },
             error: function (response) {
                 alert(response.responseText);
+                HideLoadingScreen();
             }
         });
-        HideLoadingScreen();
+        
     });
 });
 function ShowLoadingScreen() {
@@ -288,16 +294,24 @@ function BindDataToTable(result) {
 }
 
 function SaveDocType(model) {
-    $.ajax({
+    ShowLoadingScreen();
+    return $.ajax({
         url: "/Home/FolderEvents",
         data: model,
         type: "POST",
         success: function (result) {
-            alert(model.action + " thành công");
-            resolve(result);
+            if (result.status == "success") {
+                HideLoadingScreen();
+                alert(model.action + " thành công");
+            } else {
+                HideLoadingScreen();
+                alert(model.action + " thất bại");
+            }
+
         },
         error: function (err) {
-            console.log(err);
+            HideLoadingScreen();
+            alert(err);
         }
     });
 }

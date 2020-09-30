@@ -59,12 +59,14 @@ namespace ApplicationCore.Services
                     entity.parent = folder.parent;
                     entity.text = folder.text;
                     entity.modified_user = folder.modified_user;
-
                     await _doctypeRepository.UpdateAsync(entity).ConfigureAwait(false);
+                    return folder.id;
                 }
-
-                var result = await _doctypeRepository.SaveFolder(folder);
-                return result;
+                else
+                {
+                    var result = await _doctypeRepository.SaveFolder(folder);
+                    return result;
+                }
             }
             catch (Exception)
             {

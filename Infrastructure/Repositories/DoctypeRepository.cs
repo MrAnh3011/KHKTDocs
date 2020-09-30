@@ -4,8 +4,8 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using Oracle.ManagedDataAccess.Client;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -22,19 +22,21 @@ namespace Infrastructure.Repositories
             try
             {
                 var query = "INSERT INTO apec_khktdocs_folder(ID, PARENT, TEXT, CREATED_USER, MODIFIED_USER)" +
-                    " VALUES (SEQ_KHKTDOCS_FOLDER.NEXTVAL, :PARENT, :TEXT, :CREATED_USER, :MODIFIED_USER)";
-
+                    " VALUES (SEQ_KHKTDOCS_FOLDER.NEXTVAL, :PARENT, :TEXT, :CREATED_USER, :MODIFIED_USER) returning ID into :id";
                 using (OracleConnection conn = new OracleConnection(_connectionString))
                 {
                     conn.Open();
-                    var result = await conn.ExecuteAsync(query, folder);
 
-                    return result;
+                    var param = new DynamicParameters(folder);
+                    param.Output(folder, x => x.id);
+
+                    var result = await conn.ExecuteAsync(query, param);
+                    var id = param.Get<int>("id");
+                    return id;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
                 throw;
             }
         }

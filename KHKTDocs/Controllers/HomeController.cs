@@ -177,13 +177,14 @@ namespace KHKTDocs.Controllers
                         text = folderViewModel.text,
                         created_user = username
                     };
-                    await _doctypeService.SaveFolder(folder);
-                    return Json(new { status = "success", message = "success !" });
+                    var result = await _doctypeService.SaveFolder(folder);
+                    return Json(new { status = "success", message = "success !", result });
                 }
                 else if (folderViewModel.action == "Rename")
                 {
                     folder = new apec_khktdocs_folder
                     {
+                        id = int.Parse(folderViewModel.id),
                         parent = folderViewModel.parent,
                         text = folderViewModel.text,
                         modified_user = username
@@ -193,11 +194,11 @@ namespace KHKTDocs.Controllers
                 }
                 else
                 {
-                    await _doctypeService.DeleteFolder(folderViewModel.id);
+                    await _doctypeService.DeleteFolder(int.Parse(folderViewModel.id));
                     return Json(new { status = "success", message = "success !" });
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return Json(new { status = "fail", message = "fail !" });
             }

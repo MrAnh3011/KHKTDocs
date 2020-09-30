@@ -38,7 +38,7 @@ namespace Infrastructure.Repositories
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
-                await conn.ExecuteAsync($"DELETE FROM {_tableName} WHERE [Id] = :Id", new { Id = id });
+                await conn.ExecuteAsync($"DELETE FROM {_tableName} WHERE id = :id", new { id });
             }
         }
 
@@ -57,7 +57,7 @@ namespace Infrastructure.Repositories
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
-                var data = await conn.QueryAsync<T>($"SELECT * FROM {_tableName} WHERE Id = :Id", new { Id = id });
+                var data = await conn.QueryAsync<T>($"SELECT * FROM {_tableName} WHERE id = :id", new { id });
                 return data.FirstOrDefault();
             }
         }
