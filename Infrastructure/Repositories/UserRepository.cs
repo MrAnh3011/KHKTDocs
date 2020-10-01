@@ -1,5 +1,4 @@
-﻿using ApplicationCore.DTOs;
-using ApplicationCore.Entities;
+﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces.Repositories;
 using Dapper;
 using Microsoft.Extensions.Configuration;

@@ -45,6 +45,7 @@ namespace ApplicationCore.Services
                     entity.document_agency = document.document_agency;
 
                     await _documentRepository.UpdateAsync(entity).ConfigureAwait(false);
+                    return;
                 }
 
                 await _documentRepository.SaveDocument(document).ConfigureAwait(false);

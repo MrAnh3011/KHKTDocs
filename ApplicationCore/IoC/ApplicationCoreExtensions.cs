@@ -1,9 +1,6 @@
 ﻿using ApplicationCore.Interfaces.Services;
 using ApplicationCore.Services;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApplicationCore.IoC
 {
@@ -14,6 +11,7 @@ namespace ApplicationCore.IoC
             services.AddScoped<IDoctypeService, DoctypeServices>();
             services.AddScoped<IDocumentService, DocumentService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
 
             return services;
         }

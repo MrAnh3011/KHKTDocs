@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ApplicationCore.Entities.Common
+﻿namespace ApplicationCore.Entities.Common
 {
     public abstract class BaseEntity
     {

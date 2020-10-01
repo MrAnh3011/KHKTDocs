@@ -101,13 +101,11 @@ header nav a:first-child {
 }
 
 header nav a:last-child {
-    color: #fff;
     padding: 5px;
     border: 1px solid rgb(225,225,225,0);
 }
 
 header nav a:last-child:hover {
-    color: #fff;
     text-decoration: none;
     border: 1px solid #eee;
     border-radius: 5px;

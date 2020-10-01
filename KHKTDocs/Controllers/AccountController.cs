@@ -51,7 +51,8 @@ namespace KHKTDocs.Controllers
                 _claimsIdentity = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, loginViewModel.DisplayName),
                     new Claim("UserName", loginViewModel.Username),
-                    new Claim(ClaimTypes.Role, "User")
+                    new Claim(ClaimTypes.Role, "User"),
+                    new Claim(ClaimTypes.Role, "Admin")
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
             }
 

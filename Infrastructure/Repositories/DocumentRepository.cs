@@ -4,7 +4,6 @@ using ApplicationCore.Interfaces.Repositories;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Oracle.ManagedDataAccess.Client;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories

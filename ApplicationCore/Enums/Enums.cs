@@ -11,4 +11,12 @@ namespace ApplicationCore.Enums
         [Description("Đã duyệt")]
         Approved
     }
+    public enum UserRole
+    {
+        User,
+        Admin,
+        SuperAdmin,
+        Approve,
+        Delete
+    }
 }

@@ -1,12 +1,9 @@
 ﻿using ApplicationCore.Entities.Common;
 using ApplicationCore.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApplicationCore.Entities
 {
-    public class Users : BaseEntity,IAggregateRoot
+    public class Users : BaseEntity, IAggregateRoot
     {
         public int user_id { get; set; }
         public string username { get; set; }

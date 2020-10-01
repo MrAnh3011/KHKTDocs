@@ -1,12 +1,10 @@
 ﻿using ApplicationCore.Entities.Common;
 using ApplicationCore.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApplicationCore.Entities
 {
-    public class apec_khktdocs_document : BaseEntity,IAggregateRoot
+    public class apec_khktdocs_document : BaseEntity, IAggregateRoot
     {
         public string document_name { get; set; }
         public string stage { get; set; }

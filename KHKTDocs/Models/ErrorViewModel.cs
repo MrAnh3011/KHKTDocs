@@ -1,5 +1,3 @@
-using System;
-
 namespace KHKTDocs.Models
 {
     public class ErrorViewModel

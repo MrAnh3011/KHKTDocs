@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KHKTDocs.Models
+﻿namespace KHKTDocs.Models
 {
     public class LoginViewModel
     {

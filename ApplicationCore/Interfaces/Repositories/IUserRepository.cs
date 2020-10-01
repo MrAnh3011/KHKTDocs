@@ -1,5 +1,4 @@
-﻿using ApplicationCore.DTOs;
-using ApplicationCore.Entities;
+﻿using ApplicationCore.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

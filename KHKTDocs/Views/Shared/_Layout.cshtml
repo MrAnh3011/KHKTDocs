@@ -22,7 +22,12 @@
         <nav class="navbar navbar-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ApecDocs</a>
-                <a href="/Account/Logout">Đăng xuất <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+                @if (this.User.IsInRole("Admin"))
+                {
+                    <a class="mr-auto mt-1 ml-2 text-white" href="/Role">Phân quyền</a>
+                }
+                <span class="ml-auto text-white mt-1 mr-3">Xin chào, @this.User.Identity.Name </span>
+                <a class="text-white mt-1" href="/Account/Logout">Đăng xuất <i class="fa fa-sign-out" aria-hidden="true"></i></a>
             </div>
         </nav>
     </header>

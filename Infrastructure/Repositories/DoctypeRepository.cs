@@ -4,8 +4,6 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using Oracle.ManagedDataAccess.Client;
 using System;
-using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
