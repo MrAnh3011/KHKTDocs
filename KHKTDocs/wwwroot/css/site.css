@@ -201,7 +201,7 @@ header nav a:last-child i {
     border-bottom: none;
 }
 
-.docmanage-content .doclist .doc-grid table tbody tr td:last-child {
+.docmanage-content .doclist .doc-grid table tbody tr td {
     text-align: center;
     vertical-align: middle;
 }
@@ -259,6 +259,8 @@ header nav a:last-child i {
     margin: 0px 10px;
     width: 80px;
 }
+
+
 
 /* Sticky footer styles
 -------------------------------------------------- */

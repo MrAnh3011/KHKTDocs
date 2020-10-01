@@ -276,7 +276,7 @@ function BindDataToTable(result) {
         actionDown = "<a href='/Files/DownloadDoc?fileName=" + rs[i].DocumentName + "'><i class='fa fa-download'></i></a>";
 
         table.row.add([
-            "",
+            i + 1,
             displayName,
             rs[i].document_extension,
             rs[i].folder_name,

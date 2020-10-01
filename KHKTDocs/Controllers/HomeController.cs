@@ -80,12 +80,13 @@ namespace KHKTDocs.Controllers
                     document_agency = doc_agency
                 };
                 await _documentService.SaveDocument(document);
+
+                return Json(new { status = "success", message = "success" });
             }
             catch (Exception)
             {
                 return Json(new { status = "fail", message = "fail" });
             }
-            return Json(new { status = "success", message = "success" });
         }
 
         [HttpGet]

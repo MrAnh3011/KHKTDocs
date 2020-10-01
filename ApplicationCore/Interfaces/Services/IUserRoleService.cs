@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Entities;
+﻿using ApplicationCore.DTOs;
+using ApplicationCore.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,9 +9,9 @@ namespace ApplicationCore.Interfaces.Services
 {
     public interface IUserRoleService
     {
-        Task<int> SaveUserRole(apec_khktdocs_role role);
+        Task<int> SaveUserRole(apec_khktdocs_userrole role);
         Task DeleteUserRole(int id);
-        Task<IEnumerable<apec_khktdocs_role>> GetAllUserRole();
-        Task<apec_khktdocs_role> GetUserRoleById(int id);
+        Task<IEnumerable<UserRoleDTOs>> GetAllUserRole();
+        Task<UserRoleDTOs> GetUserRoleById(int id);
     }
 }

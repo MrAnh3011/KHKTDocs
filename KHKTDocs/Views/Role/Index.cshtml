@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="doc-grid form">
-                <table id="tbl-docs" class="table table-bordered">
+                <table id="tbl-role" class="table table-bordered">
                     <thead>
                         <tr>
                             <th>STT</th>
@@ -28,6 +28,7 @@
                             <th>Quyền Admin</th>
                             <th></th>
                             <th>roleId</th>
+                            <th>objectData</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,32 +45,35 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <div class="d-none">
+                                <input id="role-id" class="form-control" value="0">
+                            </div>
                             <div class="form-group">
                                 <span>Tài khoản</span>
-                                <select id="doc_created" class="form-control"></select>
+                                <select id="role-user" class="form-control"></select>
                             </div>
                             <div class="d-flex flex-row mt-2 justify-content-around">
                                 <div class="form-check">
-                                    <input type="checkbox" />
-                                    <span> Quyền truy cập</span>
+                                    <input id="role-access" type="checkbox" checked/>
+                                    <label for="role-access">Quyền truy cập</label>
                                 </div>
                                 <div class="form-check">
-                                    <input type="checkbox" />
-                                    <span> Quyền phê duyệt</span>
+                                    <input id="role-approve" type="checkbox" />
+                                    <label for="role-approve">Quyền phê duyệt</label>
                                 </div>
                                 <div class="form-check">
-                                    <input type="checkbox" />
-                                    <span> Quyền xoá</span>
+                                    <input id="role-delete" type="checkbox" />
+                                    <label for="role-delete">Quyền xoá</label>
                                 </div>
                                 <div class="form-check">
-                                    <input type="checkbox" />
-                                    <span class="text-danger"> Quyền Admin</span>
+                                    <input id="role-admin" type="checkbox" />
+                                    <label for="role-admin" class="text-danger">Quyền Admin</label>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer justify-content-center">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-success">Save</button>
+                            <button id="btnSaveRole" type="button" class="btn btn-success">Save</button>
                         </div>
                     </div>
                 </div>
