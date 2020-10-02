@@ -12,11 +12,11 @@
             });
             $("#role-user").val(response.username).change();
         } else {
-            alert("Lỗi select user.");
+            swal("Lỗi !!!", "Lỗi select user", "error");
         }
     },
     error: function (e) {
-        alert("Lỗi select user.");
+        swal("Lỗi !!!", "Lỗi select user", "error");
     }
 });
 
@@ -47,22 +47,29 @@ $("#btnSaveRole").click(function () {
         contentType: "application/json",
         dataType: "json",
         success: function (response) {
+            HideLoadingScreen();
             if (response.status == "success") {
-                HideLoadingScreen();
                 $("#modalAdd").modal("toggle");
                 ShowAllRole();
-                alert("Thêm quyền thành công");
+                swal("Thành công", "Thêm quyền thành công", "success");
             }
             else {
-                HideLoadingScreen();
-                alert("Thêm thất bại " + response.message);
+                swal("Thất bại", "Có lỗi xảy ra: " + response.message, "error");
             }
         },
         error: function (e) {
             HideLoadingScreen();
-            alert("Lỗi " + e);
+            swal("Thất bại", "Có lỗi xảy ra: " + e, "error");
         }
     });
+});
+
+$("#modalAdd").on('hidden.bs.modal', function (e) {
+    $("#role-id").val(0);
+    $("#role-access").prop("checked", true);
+    $("#role-approve").prop("checked", false);
+    $("#role-delete").prop("checked", false);
+    $("#role-admin").prop("checked", false);
 });
 
 $("#tbl-role tbody").on('click', 'a .rowedit', function () {
@@ -73,42 +80,52 @@ $("#tbl-role tbody").on('click', 'a .rowedit', function () {
 
     $("#role-id").val(data.id);
     $("#role-user").val(data.username);
-    $("#role-access").attr("checked", data.isaccess == 1);
-    $("#role-approve").attr("checked", data.isapprove == 1);
-    $("#role-delete").attr("checked", data.isdelete == 1);
-    $("#role-admin").attr("checked", data.isadmin == 1);
+    $("#role-user").trigger('change');
+    $("#role-access").prop("checked", data.isaccess == 1);
+    $("#role-approve").prop("checked", data.isapprove == 1);
+    $("#role-delete").prop("checked", data.isdelete == 1);
+    $("#role-admin").prop("checked", data.isadmin == 1);
 
     $("#modalAdd").modal('show');
 });
 $("#tbl-role tbody").on('click', 'a .rowdelete', function () {
-    ShowLoadingScreen();
-    let tr = $(this).closest('tr');
-    let row = table.row(tr).data();
+    swal({
+        title: "Bạn chắc chắn ?",
+        text: "Bạn có chắc muốn xoá mục này ?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((res) => {
+        if (res) {
+            ShowLoadingScreen();
+            let tr = $(this).closest('tr');
+            let row = table.row(tr).data();
 
-    let id = row[8].toString();
+            let id = row[8].toString();
 
-    $.ajax({
-        url: "/Role/DeleteUserRole",
-        type: "POST",
-        contentType: false,
-        processData: false,
-        contentType: "application/json",
-        dataType: "json",
-        data: JSON.stringify({ data: id }),
-        success: function (response) {
-            if (response.status == "success") {
-                HideLoadingScreen();
-                alert("Xoá thành công");
-                ShowAllRole();
-            }
-            else {
-                alert("Xoá thất bại");
-                HideLoadingScreen();
-            }
-        },
-        error: function () {
-            alert("Có lỗi xảy ra!");
-            HideLoadingScreen();
+            $.ajax({
+                url: "/Role/DeleteUserRole",
+                type: "POST",
+                contentType: false,
+                processData: false,
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({ data: id }),
+                success: function (response) {
+                    HideLoadingScreen();
+                    if (response.status == "success") {
+                        swal("Thành công", "Đã xoá thành công", "success");
+                        ShowAllRole();
+                    }
+                    else {
+                        swal("Thất bại", "Có lỗi xảy ra: " + response.message, "error");
+                    }
+                },
+                error: function (e) {
+                    HideLoadingScreen();
+                    swal("Thất bại", "Có lỗi xảy ra: " + e, "error");
+                }
+            });
         }
     });
 });
@@ -173,13 +190,13 @@ function ShowAllRole() {
                 BindDataToRoleTable(result);
                 HideLoadingScreen();
             } else {
-                alert(result.message);
+                swal("Thất bại", "Có lỗi xảy ra: " + response.message, "error");
                 HideLoadingScreen();
             }
         },
-        error: function (result) {
+        error: function (e) {
             HideLoadingScreen();
-            alert(result.ListDocs);
+            swal("Thất bại", "Có lỗi xảy ra: " + e, "error");
         }
     });
 }

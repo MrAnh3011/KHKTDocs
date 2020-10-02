@@ -3,6 +3,7 @@ using ApplicationCore.Interfaces.Repositories;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Oracle.ManagedDataAccess.Client;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 
@@ -33,6 +34,26 @@ namespace Infrastructure.Repositories
                     var id = param.Get<int>("id");
 
                     return id;
+                }
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<apec_khktdocs_userrole> GetUserRoleByUserName(string username)
+        {
+            try
+            {
+                var query = "SELECT * FROM apec_khktdocs_userrole WHERE username = :username AND ROWNUM = 1";
+
+                using (OracleConnection conn = new OracleConnection(_connectionString))
+                {
+                    conn.Open();
+                    var result = await conn.QueryAsync<apec_khktdocs_userrole>(query, new { username }).ConfigureAwait(false);
+
+                    return result.SingleOrDefault();
                 }
             }
             catch (System.Exception)

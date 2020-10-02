@@ -1,7 +1,9 @@
-﻿using KHKTDocs.Models;
+﻿using ApplicationCore.Interfaces.Services;
+using KHKTDocs.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -9,13 +11,12 @@ namespace KHKTDocs.Controllers
 {
     public class AccountController : Controller
     {
-        //private ClaimsIdentity _claimsIdentity;
-        //private ClaimsPrincipal _claimsPrincipal;
-        //public AccountController(ClaimsIdentity claimsIdentity, ClaimsPrincipal claimsPrincipal)
-        //{
-        //    _claimsIdentity = claimsIdentity;
-        //    _claimsPrincipal = claimsPrincipal;
-        //}
+        private readonly IUserRoleService _userRoleService;
+
+        public AccountController(IUserRoleService userRoleService)
+        {
+            _userRoleService = userRoleService;
+        }
 
         public IActionResult Login()
         {
@@ -37,30 +38,39 @@ namespace KHKTDocs.Controllers
         [Route("/postusersession")]
         public async Task<IActionResult> PostUserSession(LoginViewModel loginViewModel)
         {
-            ClaimsIdentity _claimsIdentity;
-            if (loginViewModel.Username == "thientt")
+            try
             {
-                _claimsIdentity = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, loginViewModel.DisplayName),
-                    new Claim("UserName", loginViewModel.Username),
-                    new Claim(ClaimTypes.Role, "Admin")
-                }, CookieAuthenticationDefaults.AuthenticationScheme);
+                ClaimsIdentity _claimsIdentity;
+                var listClaim = new List<Claim>();
+                var result = await _userRoleService.GetUserRoleByUserName(loginViewModel.Username);
+
+                listClaim.Add(new Claim(ClaimTypes.Name, loginViewModel.DisplayName));
+                listClaim.Add(new Claim("UserName", loginViewModel.Username));
+
+                if (result != null)
+                {
+                    if (result.isaccess == 1)
+                        listClaim.Add(new Claim(ClaimTypes.Role, "Access"));
+                    if (result.isapprove == 1)
+                        listClaim.Add(new Claim(ClaimTypes.Role, "Approve"));
+                    if (result.isdelete == 1)
+                        listClaim.Add(new Claim(ClaimTypes.Role, "Delete"));
+                    if (result.isadmin == 1)
+                        listClaim.Add(new Claim(ClaimTypes.Role, "Admin"));
+                    if (result.issuperadmin == 1)
+                        listClaim.Add(new Claim(ClaimTypes.Role, "SuperAdmin"));
+                }
+                _claimsIdentity = new ClaimsIdentity(listClaim, CookieAuthenticationDefaults.AuthenticationScheme);
+                ClaimsPrincipal _claimsPrincipal = new ClaimsPrincipal(_claimsIdentity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, _claimsPrincipal);
+
+                return Json(new { status = "success", message = "Login success" });
             }
-            else
+            catch (System.Exception)
             {
-                _claimsIdentity = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, loginViewModel.DisplayName),
-                    new Claim("UserName", loginViewModel.Username),
-                    new Claim(ClaimTypes.Role, "User"),
-                    new Claim(ClaimTypes.Role, "Admin")
-                }, CookieAuthenticationDefaults.AuthenticationScheme);
+                throw;
             }
-
-            ClaimsPrincipal _claimsPrincipal = new ClaimsPrincipal(_claimsIdentity);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, _claimsPrincipal);
-
-            return Json(new { status = "success", message = "Login success" });
         }
     }
 }

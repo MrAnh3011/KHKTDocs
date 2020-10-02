@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace KHKTDocs.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class RoleController : Controller
     {
         private readonly IUserRoleService _userRoleService;
@@ -52,7 +52,11 @@ namespace KHKTDocs.Controllers
                 };
                 var result = await _userRoleService.SaveUserRole(userrole);
 
-                return Json(new { status = "success", message = "success"});
+                if(result != -1)
+                {
+                    return Json(new { status = "success", message = "success" });
+                }
+                return Json(new { status = "fail", message = "Không thêm mới cho user đã có quyền" });
             }
             catch (System.Exception)
             {

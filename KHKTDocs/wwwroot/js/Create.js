@@ -15,12 +15,12 @@ $.ajax({
             HideLoadingScreen();
         } else {
             HideLoadingScreen();
-            alert("Lỗi, vui lòng kiểm tra lại.");
+            swal("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
         }
     },
     error: function (e) {
         HideLoadingScreen();
-        alert("Lỗi, vui lòng kiểm tra lại.");
+        swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
     }
 });
 
@@ -56,17 +56,17 @@ $("#submitDocs").click(function () {
         data: data,
         success: function (response) {
             if (response.status == "success") {
-                alert("Thêm tài liệu thành công");
+                swal("Thành công", "Thêm tài liệu thành công", "success");
                 HideLoadingScreen();
                 window.location.href("~/Home/Index");
             }
             else {
-                alert("Lỗi, vui lòng kiểm tra lại.");
+                swal("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
             }
         },
         error: function (responsse) {
             HideLoadingScreen();
-            alert("Lỗi, vui lòng kiểm tra lại.")
+            swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
         }
     });
 });

@@ -260,8 +260,9 @@ header nav a:last-child i {
     width: 80px;
 }
 
-
-
+#modalAdd .modal-body .form-group span.select2-container {
+    width: 100% !important;
+}
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

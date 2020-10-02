@@ -108,7 +108,13 @@ namespace ApplicationCore.Services
 
         public async Task ApproveDocument(int id)
         {
-            await _documentRepository.ApproveDocument(id).ConfigureAwait(false);
+            try
+            {
+                await _documentRepository.ApproveDocument(id).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public async Task<IEnumerable<DocumentDetailDTO>> GetDocsByFolderId(string id)

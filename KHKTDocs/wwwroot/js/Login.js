@@ -23,7 +23,7 @@
             var userName = $('#userName').val();
             var password = $('#password').val();
             if (userName === '' || password === '') {
-                alert("Bạn cần nhập đủ Tên đăng nhập và Mật khẩu!");
+                swal("Chú ý", "Bạn cần nhập đủ Tên đăng nhập và Mật khẩu!", "warning");
                 HideLoadingScreen();
                 return;
             }
@@ -49,19 +49,19 @@
                         PostUserSession(loginModel);
                         HideLoadingScreen();
                     } else {
-                        alert("Tên đăng nhập hoặc Mật khẩu không đúng!");
+                        swal("Lỗi", "Tên đăng nhập hoặc mật khẩu không đúng: " + response.message, "error");
                         HideLoadingScreen();
                         return;
                     }
                 },
-                error: function (response) {
-                    alert(response);
+                error: function (e) {
+                    swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
                 }
             });
 
         } catch (err) {
             HideLoadingScreen();
-            alert(err);
+            swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
         }
     }
 
@@ -80,13 +80,13 @@
                 },
                 error: function (response) {
                     HideLoadingScreen();
-                    alert(response);
+                    swal("Lỗi", "Vui lòng kiểm tra lại: " + response, "error");
                 }
             });
 
         } catch (err) {
             HideLoadingScreen();
-            alert(err);
+            swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
         }
     }
 });

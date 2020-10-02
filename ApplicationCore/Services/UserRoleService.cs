@@ -40,6 +40,7 @@ namespace ApplicationCore.Services
 
                 foreach (var item in result)
                 {
+                    if (item.username == "anhpt") continue;
                     var user = await _userRepository.GetUsersByUserName(item.username);
 
                     var role = new UserRoleDTOs
@@ -60,7 +61,6 @@ namespace ApplicationCore.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }
@@ -70,6 +70,9 @@ namespace ApplicationCore.Services
             try
             {
                 var result = await _userRoleRepository.GetByIdAsync(id).ConfigureAwait(false);
+
+                if (result.username == "anhpt") return null;
+
                 var user = await _userRepository.GetUsersByUserName(result.username);
 
                 var userRole = new UserRoleDTOs
@@ -80,7 +83,8 @@ namespace ApplicationCore.Services
                     isadmin = result.isadmin,
                     isapprove = result.isapprove,
                     isdelete = result.isdelete,
-                    isaccess= result.isaccess
+                    isaccess = result.isaccess,
+                    issuperadmin = result.issuperadmin
                 };
 
                 return userRole;
@@ -88,6 +92,34 @@ namespace ApplicationCore.Services
             catch (System.Exception)
             {
 
+                throw;
+            }
+        }
+
+        public async Task<UserRoleDTOs> GetUserRoleByUserName(string username)
+        {
+            try
+            {
+                var result = await _userRoleRepository.GetUserRoleByUserName(username).ConfigureAwait(false);
+                if (result == null) return null;
+                var user = await _userRepository.GetUsersByUserName(username);
+
+                var userRole = new UserRoleDTOs
+                {
+                    id = result.id,
+                    username = result.username,
+                    fullname = user.display_name,
+                    isadmin = result.isadmin,
+                    isapprove = result.isapprove,
+                    isdelete = result.isdelete,
+                    isaccess = result.isaccess,
+                    issuperadmin = result.issuperadmin
+                };
+
+                return userRole;
+            }
+            catch (System.Exception)
+            {
                 throw;
             }
         }
@@ -112,9 +144,13 @@ namespace ApplicationCore.Services
                 }
                 else
                 {
-                    var result = await _userRoleRepository.SaveUserRole(role).ConfigureAwait(false);
-
-                    return result;
+                    var isexists = await GetUserRoleByUserName(role.username).ConfigureAwait(false);
+                    if (isexists == null)
+                    {
+                        var result = await _userRoleRepository.SaveUserRole(role).ConfigureAwait(false);
+                        return result;
+                    }
+                    else return -1;
                 }
             }
             catch (System.Exception)

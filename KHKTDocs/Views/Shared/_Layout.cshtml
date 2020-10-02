@@ -22,7 +22,7 @@
         <nav class="navbar navbar-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ApecDocs</a>
-                @if (this.User.IsInRole("Admin"))
+                @if (this.User.IsInRole("Admin") || this.User.IsInRole("SuperAdmin"))
                 {
                     <a class="mr-auto mt-1 ml-2 text-white" href="/Role">Phân quyền</a>
                 }
@@ -48,6 +48,7 @@
     <script src="~/plugins/jstree/dist/jstree.min.js"></script>
     <script src="~/plugins/select2/dist/js/select2.min.js"></script>
     <script src="~/plugins/select2/dist/select2totree.js"></script>
+    <script src="~/plugins/sweetAlert/sweetalert.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

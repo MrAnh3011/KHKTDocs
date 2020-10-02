@@ -13,5 +13,6 @@ namespace ApplicationCore.Interfaces.Services
         Task DeleteUserRole(int id);
         Task<IEnumerable<UserRoleDTOs>> GetAllUserRole();
         Task<UserRoleDTOs> GetUserRoleById(int id);
+        Task<UserRoleDTOs> GetUserRoleByUserName(string username);
     }
 }

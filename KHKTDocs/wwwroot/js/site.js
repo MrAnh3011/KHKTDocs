@@ -4,7 +4,9 @@
     var lstMenu = await GetListMenu();
 
     var lstSelect = BindMenuSelect(lstMenu.listMenu);
-    $("#doc_folder").select2ToTree({ treeData: { dataArr: lstSelect } })
+    $("#doc_folder").select2ToTree({ treeData: { dataArr: lstSelect } });
+    $("#role-user").select2();
+    $("#doc_created").select2();
 
     $("#doctree").jstree({
         "core": {
@@ -13,7 +15,7 @@
         },
         "plugins": ["contextmenu", "dnd", "types"],
         "contextmenu": {
-            "select_node" : false
+            "select_node": false
         }
     });
 
@@ -121,16 +123,16 @@
                     BindDataToTable(response);
                     HideLoadingScreen();
                 } else {
-                    alert("Something went wrong");
+                    swal("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
                     HideLoadingScreen();
                 }
             },
-            error: function (response) {
-                alert(response.responseText);
+            error: function (e) {
+                swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
                 HideLoadingScreen();
             }
         });
-        
+
     });
 });
 function ShowLoadingScreen() {
@@ -201,18 +203,18 @@ function SearchAllDocs() {
                 if (result.status == "success") {
                     BindDataToTable(result);
                 } else {
-                    alert(result.message);
+                    swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
                 }
                 HideLoadingScreen();
             },
-            error: function (result) {
+            error: function (e) {
                 HideLoadingScreen();
-                alert(result.ListDocs);
+                swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
             }
         });
     } catch (err) {
         HideLoadingScreen();
-        alert(err);
+        swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
     }
 }
 
@@ -228,18 +230,18 @@ function SearchDocsByFolder(folderId) {
                     BindDataToTable(result);
                 }
                 else {
-                    alert(err);
+                    swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
                 }
                 HideLoadingScreen();
             },
             error: function (err) {
                 HideLoadingScreen();
-                alert(err);
+                swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
             }
         });
     } catch (e) {
         HideLoadingScreen();
-        alert(e);
+        swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
     }
 }
 
@@ -250,9 +252,13 @@ function BindDataToTable(result) {
     for (var i = 0; i < rs.length; i++) {
         var displayName = rs[i].document_name;
         var actionDown = "";
-        var actionDelete = "<a href='#' class='deleteDoc'><i class='fa fa-trash'></i></a>";
+        var actionDelete = "";
 
-        if (result.role == "Admin") {
+        if (result.role.includes("Admin") || result.role.includes("SuperAdmin") || result.role.includes("Delete")) {
+            actionDelete = "<a href='#' onclick='DeleteDoc(" + rs[i].id + ")' class='deleteDoc'><i class='fa fa-trash'></i></a>";
+        }
+
+        if (result.role.includes("Admin") || result.role.includes("SuperAdmin") || result.role.includes("Approve")) {
             var actionApprove = "<a href='#' onclick='ApproveDoc(" + rs[i].id + ")' class='deleteDoc'><i class='fa fa-check-circle'></i> Duyệt</a>";
         }
         else
@@ -265,7 +271,7 @@ function BindDataToTable(result) {
             docName.includes('.docx') ||
             docName.includes('.xls') ||
             docName.includes('.xlsx')) {
-            displayName = "<a target='_blank' href='https://view.officeapps.live.com/op/embed.aspx?src=http://http://localhost:54523/uploads/" +
+            displayName = "<a target='_blank' href='https://view.officeapps.live.com/op/embed.aspx?src=http://docs.apecgroup.net/uploads/" +
                 encodeURI(docName) +
                 "'><i class='fa fa-eye'></i> " + rs[i].document_name + "</a>";
         } else if (docName[0].includes('.pdf') || docName[0].includes('.txt')) {
@@ -273,7 +279,7 @@ function BindDataToTable(result) {
                 docName[0] +
                 "'><i class='fa fa-eye'></i> " + rs[i].display_name + "</a>";
         }
-        actionDown = "<a href='/Files/DownloadDoc?fileName=" + rs[i].DocumentName + "'><i class='fa fa-download'></i></a>";
+        actionDown = "<a href='/Home/DownloadFile/" + rs[i].id + "'><i class='fa fa-download'></i></a>";
 
         table.row.add([
             i + 1,
@@ -302,16 +308,16 @@ function SaveDocType(model) {
         success: function (result) {
             if (result.status == "success") {
                 HideLoadingScreen();
-                alert(model.action + " thành công");
+                swal("Thành công", model.action + " thành công", "success");
             } else {
                 HideLoadingScreen();
-                alert(model.action + " thất bại");
+                swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
             }
 
         },
         error: function (err) {
             HideLoadingScreen();
-            alert(err);
+            swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
         }
     });
 }
@@ -319,21 +325,58 @@ function ApproveDoc(id) {
     ShowLoadingScreen();
     $.ajax({
         url: "/Home/ApproveDoc",
-        data: { data: id },
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify({ data: id.toString() }),
         type: "POST",
         success: function (result) {
             if (result.status == "success") {
                 SearchAllDocs();
-                alert("Duyệt thành công");
+                swal("Thành công", "Duyệt thành công", "success");
             }
             else {
-                alert(err);
+                swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
             }
             HideLoadingScreen();
         },
         error: function (err) {
             HideLoadingScreen();
-            alert(err);
+            swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
+        }
+    });
+}
+
+function DeleteDoc(id) {
+    swal({
+        title: "Bạn chắc chắn ?",
+        text: "Bạn có chắc muốn xoá mục này ?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((res) => {
+        if (res) {
+            ShowLoadingScreen();
+            $.ajax({
+                url: "/Home/Delete",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({ data: id.toString() }),
+                type: "POST",
+                success: function (result) {
+                    if (result.status == "success") {
+                        SearchAllDocs();
+                        swal("Thành công", "Xoá thành công", "success");
+                    }
+                    else {
+                        swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
+                    }
+                    HideLoadingScreen();
+                },
+                error: function (err) {
+                    HideLoadingScreen();
+                    swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
+                }
+            });
         }
     });
 }

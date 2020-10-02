@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
 
         public async Task<int> ApproveDocument(int id)
         {
-            string query = $"UPDATE apec_khktdocs_document a SET a.status = {(int)DocumentStatus.Approved} WHERE a.id = :id";
+            string query = $"UPDATE apec_khktdocs_document a SET a.status = {(int)DocumentStatus.Approved}, a.APPROVE_DATE = CURRENT_DATE WHERE a.id = :id";
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
