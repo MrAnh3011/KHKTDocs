@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -46,7 +47,7 @@ namespace KHKTDocs.Controllers
         {
             try
             {
-                IFormFile file = Request.Form.Files.First();
+                IEnumerable<IFormFile> file = Request.Form.Files;
                 string stage = Request.Form["stage"].ToString();
                 string doc_description = Request.Form["doc_description"].ToString();
                 string create_user = Request.Form["create_user"].ToString();
@@ -56,30 +57,33 @@ namespace KHKTDocs.Controllers
                 string doc_receiver = Request.Form["doc_receiver"].ToString();
                 string doc_agency = Request.Form["doc_agency"].ToString();
 
-                var memoryStream = new MemoryStream();
-                file.OpenReadStream().CopyTo(memoryStream);
-                var fileData = memoryStream.ToArray();
-                var fullpath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\uploads", file.FileName);
-                if (System.IO.File.Exists(fullpath))
+                foreach (var item in file)
                 {
-                    System.IO.File.Delete(fullpath);
-                }
-                System.IO.File.WriteAllBytes(fullpath, fileData);
+                    var memoryStream = new MemoryStream();
+                    item.OpenReadStream().CopyTo(memoryStream);
+                    var fileData = memoryStream.ToArray();
+                    var fullpath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\uploads", item.FileName);
+                    if (System.IO.File.Exists(fullpath))
+                    {
+                        System.IO.File.Delete(fullpath);
+                    }
+                    System.IO.File.WriteAllBytes(fullpath, fileData);
 
-                apec_khktdocs_document document = new apec_khktdocs_document
-                {
-                    stage = stage,
-                    document_description = doc_description,
-                    document_extension = Path.GetExtension(file.FileName),
-                    document_name = Path.GetFileNameWithoutExtension(file.FileName),
-                    document_folder_id = int.Parse(doc_folder),
-                    created_user = create_user,
-                    created_date = Convert.ToDateTime(created_date),
-                    status = int.Parse(status),
-                    document_receiver = doc_receiver,
-                    document_agency = doc_agency
-                };
-                await _documentService.SaveDocument(document);
+                    apec_khktdocs_document document = new apec_khktdocs_document
+                    {
+                        stage = stage,
+                        document_description = doc_description,
+                        document_extension = Path.GetExtension(item.FileName),
+                        document_name = Path.GetFileNameWithoutExtension(item.FileName),
+                        document_folder_id = int.Parse(doc_folder),
+                        created_user = create_user,
+                        created_date = Convert.ToDateTime(created_date),
+                        status = int.Parse(status),
+                        document_receiver = doc_receiver,
+                        document_agency = doc_agency
+                    };
+                    await _documentService.SaveDocument(document);
+                }
 
                 return Json(new { status = "success", message = "success" });
             }
@@ -262,9 +266,15 @@ namespace KHKTDocs.Controllers
             var res = await _documentService.GetDocumentById(id);
             string fileName = res.document_name + res.document_extension;
             var fullpath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\uploads", fileName);
-            var fs = new FileStream(fullpath, FileMode.Open);
 
-            return File(fs, "application/octet-stream", fileName);
+            if (System.IO.File.Exists(fullpath))
+            {
+                var fs = new FileStream(fullpath, FileMode.Open);
+                return File(fs, "application/octet-stream", fileName);
+            }
+            else
+                return View();
+
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

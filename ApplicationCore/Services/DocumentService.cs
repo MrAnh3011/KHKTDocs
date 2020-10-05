@@ -103,7 +103,7 @@ namespace ApplicationCore.Services
                 };
                 lstDocDTO.Add(itemDocs);
             }
-            return lstDocDTO;
+            return lstDocDTO.OrderByDescending(x =>x.created_date);
         }
 
         public async Task ApproveDocument(int id)
@@ -177,7 +177,7 @@ namespace ApplicationCore.Services
                 if (model.status != "All")
                     lstDocs = lstDocs.Where(x => x.status.Contains(model.status)).ToList();
 
-                return lstDocs;
+                return lstDocs.OrderByDescending(x => x.created_date);
             }
             catch (Exception e)
             {

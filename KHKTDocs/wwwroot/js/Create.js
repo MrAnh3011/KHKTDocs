@@ -27,7 +27,6 @@ $.ajax({
 $("#submitDocs").click(function () {
     ShowLoadingScreen();
     let stage = $("#doc_stage").val();
-    let doc_file = $("#doc_file").get(0);
     let doc_description = $("#doc_description").val();
     let create_user = $("#doc_created").val();
     let status = $("#doc_status option:selected").val();
@@ -36,9 +35,15 @@ $("#submitDocs").click(function () {
     let doc_receiver = $("#doc_receiver").val();
     let doc_agency = $("#doc_agency").val();
 
+    let doc_file = $("#doc_file").get(0);
+
+    
+    if()
     let fileUpload = doc_file.files;
     let data = new FormData();
-    data.append(fileUpload[0].name, fileUpload[0]);
+    for (var i = 0; i < fileUpload.length; i++) {
+        data.append(fileUpload[i].name, fileUpload[i]);
+    }
     data.append("stage", stage);
     data.append("doc_description", doc_description);
     data.append("create_user", create_user);
@@ -56,9 +61,12 @@ $("#submitDocs").click(function () {
         data: data,
         success: function (response) {
             if (response.status == "success") {
-                swal("Thành công", "Thêm tài liệu thành công", "success");
                 HideLoadingScreen();
-                window.location.href("~/Home/Index");
+                swal("Thành công", "Thêm tài liệu thành công", "success").then(res => {
+                    if (res) {
+                        window.location.href = "/Home/Index";
+                    }
+                });
             }
             else {
                 swal("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
