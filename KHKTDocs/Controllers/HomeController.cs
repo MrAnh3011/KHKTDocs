@@ -59,30 +59,32 @@ namespace KHKTDocs.Controllers
 
                 foreach (var item in file)
                 {
-                    var memoryStream = new MemoryStream();
-                    item.OpenReadStream().CopyTo(memoryStream);
-                    var fileData = memoryStream.ToArray();
-                    var fullpath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\uploads", item.FileName);
-                    if (System.IO.File.Exists(fullpath))
+                    using (var memoryStream = new MemoryStream())
                     {
-                        System.IO.File.Delete(fullpath);
-                    }
-                    System.IO.File.WriteAllBytes(fullpath, fileData);
+                        item.OpenReadStream().CopyTo(memoryStream);
+                        var fileData = memoryStream.ToArray();
+                        var fullpath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\uploads", item.FileName);
+                        if (System.IO.File.Exists(fullpath))
+                        {
+                            System.IO.File.Delete(fullpath);
+                        }
+                        System.IO.File.WriteAllBytes(fullpath, fileData);
 
-                    apec_khktdocs_document document = new apec_khktdocs_document
-                    {
-                        stage = stage,
-                        document_description = doc_description,
-                        document_extension = Path.GetExtension(item.FileName),
-                        document_name = Path.GetFileNameWithoutExtension(item.FileName),
-                        document_folder_id = int.Parse(doc_folder),
-                        created_user = create_user,
-                        created_date = Convert.ToDateTime(created_date),
-                        status = int.Parse(status),
-                        document_receiver = doc_receiver,
-                        document_agency = doc_agency
-                    };
-                    await _documentService.SaveDocument(document);
+                        apec_khktdocs_document document = new apec_khktdocs_document
+                        {
+                            stage = stage,
+                            document_description = doc_description,
+                            document_extension = Path.GetExtension(item.FileName),
+                            document_name = Path.GetFileNameWithoutExtension(item.FileName),
+                            document_folder_id = int.Parse(doc_folder),
+                            created_user = create_user,
+                            created_date = Convert.ToDateTime(created_date),
+                            status = int.Parse(status),
+                            document_receiver = doc_receiver,
+                            document_agency = doc_agency
+                        };
+                        await _documentService.SaveDocument(document);
+                    }
                 }
 
                 return Json(new { status = "success", message = "success" });
@@ -276,6 +278,12 @@ namespace KHKTDocs.Controllers
                 return View();
 
         }
+
+        [HttpGet]
+        //public async Task<IActionResult> DownloadFolder (int folderID)
+        //{
+
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
