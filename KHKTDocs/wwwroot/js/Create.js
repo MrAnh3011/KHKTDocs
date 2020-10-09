@@ -15,12 +15,12 @@ $.ajax({
             HideLoadingScreen();
         } else {
             HideLoadingScreen();
-            swal("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
+            Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
         }
     },
     error: function (e) {
         HideLoadingScreen();
-        swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
+        Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
     }
 });
 
@@ -37,8 +37,19 @@ $("#submitDocs").click(function () {
 
     let doc_file = $("#doc_file").get(0);
 
+    if (!stage || !doc_description || status === "-1" || !doc_receiver || !doc_agency || doc_file.files.length === 0) {
+        HideLoadingScreen();
+        Swal.fire("Lỗi", "Vui lòng nhập đầy đủ thông tin", "error");
+        return;
+    }
+    let regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if (!regex.test(doc_receiver)) {
+        HideLoadingScreen();
+        Swal.fire("Lỗi", "Không đúng định dạng email", "error");
+        return;
+    }
+
     
-    if()
     let fileUpload = doc_file.files;
     let data = new FormData();
     for (var i = 0; i < fileUpload.length; i++) {
@@ -62,19 +73,20 @@ $("#submitDocs").click(function () {
         success: function (response) {
             if (response.status == "success") {
                 HideLoadingScreen();
-                swal("Thành công", "Thêm tài liệu thành công", "success").then(res => {
+                Swal.fire("Thành công", "Thêm tài liệu thành công", "success").then(res => {
                     if (res) {
                         window.location.href = "/Home/Index";
                     }
                 });
             }
             else {
-                swal("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
+                HideLoadingScreen();
+                Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
             }
         },
         error: function (responsse) {
             HideLoadingScreen();
-            swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
+            Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
         }
     });
 });

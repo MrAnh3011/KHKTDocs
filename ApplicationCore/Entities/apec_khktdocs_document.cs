@@ -18,5 +18,6 @@ namespace ApplicationCore.Entities
         public DateTime? created_date { get; set; }
         public DateTime? modified_date { get; set; }
         public string document_agency { get; set; }
+        public string approver { get; set; }
     }
 }

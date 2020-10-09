@@ -93,38 +93,41 @@ namespace ApplicationCore.Services
                     document_description = item.document_description,
                     document_extension = item.document_extension,
                     created_user = username.display_name,
-                    created_date = item.created_date,
-                    approve_date = item.approve_date,
+                    created_date = item.created_date?.ToString("dd/MM/yyyy"),
+                    approve_date = item.approve_date?.ToString("dd/MM/yyyy"),
                     folder_name = foldername.text,
+                    folder_id = item.document_folder_id,
                     stage = item.stage,
                     status = GetDocDesEnum(item.status),
                     document_receiver = item.document_receiver,
-                    document_agency = item.document_agency
+                    document_agency = item.document_agency,
+                    approver = item.approver
                 };
                 lstDocDTO.Add(itemDocs);
             }
-            return lstDocDTO.OrderByDescending(x =>x.created_date);
+            return lstDocDTO.OrderByDescending(x => x.created_date).ThenByDescending(x => x.id);
         }
 
-        public async Task ApproveDocument(int id)
+        public async Task ApproveDocument(int id, string appover)
         {
             try
             {
-                await _documentRepository.ApproveDocument(id).ConfigureAwait(false);
+                await _documentRepository.ApproveDocument(id, appover).ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                throw;
             }
         }
 
         public async Task<IEnumerable<DocumentDetailDTO>> GetDocsByFolderId(string id)
         {
-            var result = (await _doctypeService.GetChildFoldersById(id).ConfigureAwait(false));
+            var listFolder = await _doctypeService.GetChildFoldersById(id).ConfigureAwait(false);
             List<DocumentDetailDTO> lstDocs = new List<DocumentDetailDTO>();
 
-            if (result.Count() != 0)
+            if (listFolder.Count() != 0)
             {
-                foreach (var itemFolder in result)
+                foreach (var itemFolder in listFolder)
                 {
                     string where = $"where DOCUMENT_FOLDER_ID = {itemFolder.id}";
                     var tmpLst = await _documentRepository.SelectQuery(where).ConfigureAwait(false);
@@ -144,13 +147,15 @@ namespace ApplicationCore.Services
                                 document_description = itemDoc.document_description,
                                 document_extension = itemDoc.document_extension,
                                 created_user = username.display_name,
-                                created_date = itemDoc.created_date,
-                                approve_date = itemDoc.approve_date,
+                                created_date = itemDoc.created_date?.ToString("dd/MM/yyyy"),
+                                approve_date = itemDoc.approve_date?.ToString("dd/MM/yyyy"),
                                 folder_name = foldername.text,
+                                folder_id = itemDoc.document_folder_id,
                                 stage = itemDoc.stage,
                                 status = GetDocDesEnum(itemDoc.status),
                                 document_receiver = itemDoc.document_receiver,
-                                document_agency = itemDoc.document_agency
+                                document_agency = itemDoc.document_agency,
+                                approver = itemDoc.approver
                             };
                             subList.Add(tmpDocs);
                         }
@@ -159,7 +164,7 @@ namespace ApplicationCore.Services
                 }
             }
 
-            return lstDocs;
+            return lstDocs.OrderByDescending(x => x.created_date).ThenByDescending(x => x.id);
         }
 
         public async Task<IEnumerable<DocumentDetailDTO>> GetDocsByConditions(SearchConditionsDTO model)
@@ -177,7 +182,7 @@ namespace ApplicationCore.Services
                 if (model.status != "All")
                     lstDocs = lstDocs.Where(x => x.status.Contains(model.status)).ToList();
 
-                return lstDocs.OrderByDescending(x => x.created_date);
+                return lstDocs.OrderByDescending(x => x.created_date).ThenByDescending(x => x.id);
             }
             catch (Exception e)
             {
@@ -193,10 +198,10 @@ namespace ApplicationCore.Services
             switch (status)
             {
                 case 0:
-                    result = "Ban hành";
+                    result = "Chờ duyệt";
                     break;
                 case 1:
-                    result = "Chờ duyệt";
+                    result = "Ban hành";
                     break;
                 case 2:
                     result = "Đã duyệt";

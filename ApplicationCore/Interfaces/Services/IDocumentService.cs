@@ -11,7 +11,7 @@ namespace ApplicationCore.Interfaces.Services
         Task DeleteDocument(int id);
         Task<apec_khktdocs_document> GetDocumentById(int id);
         Task<IEnumerable<DocumentDetailDTO>> GetAllDocument();
-        Task ApproveDocument(int id);
+        Task ApproveDocument(int id, string approver);
         Task<IEnumerable<DocumentDetailDTO>> GetDocsByFolderId(string id);
         Task<IEnumerable<DocumentDetailDTO>> GetDocsByConditions(SearchConditionsDTO model);
     }

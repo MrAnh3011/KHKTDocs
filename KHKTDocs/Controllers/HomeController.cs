@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,6 +44,7 @@ namespace KHKTDocs.Controllers
         }
 
         [HttpPost]
+        [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
         public async Task<JsonResult> CreateDoc()
         {
             try
@@ -66,7 +68,7 @@ namespace KHKTDocs.Controllers
                         var fullpath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\uploads", item.FileName);
                         if (System.IO.File.Exists(fullpath))
                         {
-                            System.IO.File.Delete(fullpath);
+                            return Json(new { status = "fail", message = "Trùng tên file !" });
                         }
                         System.IO.File.WriteAllBytes(fullpath, fileData);
 
@@ -217,8 +219,8 @@ namespace KHKTDocs.Controllers
                         text = folderViewModel.text,
                         modified_user = username
                     };
-                    await _doctypeService.SaveFolder(folder);
-                    return Json(new { status = "success", message = "success !" });
+                    var result = await _doctypeService.SaveFolder(folder);
+                    return Json(new { status = "success", message = "success !", result });
                 }
                 else
                 {
@@ -251,10 +253,10 @@ namespace KHKTDocs.Controllers
 
                 if (role.Contains("Approve") || role.Contains("Admin") || role.Contains("SuperAdmin"))
                 {
-                    await _documentService.ApproveDocument(int.Parse(model.data));
+                    await _documentService.ApproveDocument(int.Parse(model.data), currentUser.Identity.Name);
                     return Json(new { status = "success", message = "success !" });
                 }
-                return Json(new { status = "fail", message = " Duyệt không thành công! \n Duyệt có quyền Xoá!" });
+                return Json(new { status = "fail", message = " Duyệt không thành công! \n Không có quyền duyệt!" });
             }
             catch (Exception e)
             {
@@ -280,10 +282,38 @@ namespace KHKTDocs.Controllers
         }
 
         [HttpGet]
-        //public async Task<IActionResult> DownloadFolder (int folderID)
-        //{
+        public async Task<IActionResult> DownloadFolder(string id)
+        {
+            try
+            {
+                var listFile = await _documentService.GetDocsByFolderId(id).ConfigureAwait(false);
 
-        //}
+                if (listFile != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                        {
+                            foreach (var item in listFile)
+                            {
+                                string filename = item.document_name + item.document_extension;
+                                var fullpath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\uploads", filename);
+
+                                zipArchive.CreateEntryFromFile(fullpath, filename);
+                            }
+                        }
+                        string zipFileName = listFile.First().folder_name;
+
+                        return File(memoryStream.ToArray(), "application/zip", zipFileName + ".zip");
+                    }
+                }
+                return View();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

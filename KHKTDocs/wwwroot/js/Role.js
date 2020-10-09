@@ -12,11 +12,11 @@
             });
             $("#role-user").val(response.username).change();
         } else {
-            swal("Lỗi !!!", "Lỗi select user", "error");
+            Swal.fire("Lỗi !!!", "Lỗi select user", "error");
         }
     },
     error: function (e) {
-        swal("Lỗi !!!", "Lỗi select user", "error");
+        Swal.fire("Lỗi !!!", "Lỗi select user", "error");
     }
 });
 
@@ -51,15 +51,15 @@ $("#btnSaveRole").click(function () {
             if (response.status == "success") {
                 $("#modalAdd").modal("toggle");
                 ShowAllRole();
-                swal("Thành công", "Thêm quyền thành công", "success");
+                Swal.fire("Thành công", "Thêm quyền thành công", "success");
             }
             else {
-                swal("Thất bại", "Có lỗi xảy ra: " + response.message, "error");
+                Swal.fire("Thất bại", "Có lỗi xảy ra: " + response.message, "error");
             }
         },
         error: function (e) {
             HideLoadingScreen();
-            swal("Thất bại", "Có lỗi xảy ra: " + e, "error");
+            Swal.fire("Thất bại", "Có lỗi xảy ra: " + e, "error");
         }
     });
 });
@@ -89,14 +89,13 @@ $("#tbl-role tbody").on('click', 'a .rowedit', function () {
     $("#modalAdd").modal('show');
 });
 $("#tbl-role tbody").on('click', 'a .rowdelete', function () {
-    swal({
+    Swal.fire({
         title: "Bạn chắc chắn ?",
         text: "Bạn có chắc muốn xoá mục này ?",
         icon: "warning",
-        buttons: true,
-        dangerMode: true,
+        showCancelButton: true
     }).then((res) => {
-        if (res) {
+        if (res.isConfirmed) {
             ShowLoadingScreen();
             let tr = $(this).closest('tr');
             let row = table.row(tr).data();
@@ -114,16 +113,16 @@ $("#tbl-role tbody").on('click', 'a .rowdelete', function () {
                 success: function (response) {
                     HideLoadingScreen();
                     if (response.status == "success") {
-                        swal("Thành công", "Đã xoá thành công", "success");
+                        Swal.fire("Thành công", "Đã xoá thành công", "success");
                         ShowAllRole();
                     }
                     else {
-                        swal("Thất bại", "Có lỗi xảy ra: " + response.message, "error");
+                        Swal.fire("Thất bại", "Có lỗi xảy ra: " + response.message, "error");
                     }
                 },
                 error: function (e) {
                     HideLoadingScreen();
-                    swal("Thất bại", "Có lỗi xảy ra: " + e, "error");
+                    Swal.fire("Thất bại", "Có lỗi xảy ra: " + e, "error");
                 }
             });
         }
@@ -190,13 +189,13 @@ function ShowAllRole() {
                 BindDataToRoleTable(result);
                 HideLoadingScreen();
             } else {
-                swal("Thất bại", "Có lỗi xảy ra: " + response.message, "error");
+                Swal.fire("Thất bại", "Có lỗi xảy ra: " + response.message, "error");
                 HideLoadingScreen();
             }
         },
         error: function (e) {
             HideLoadingScreen();
-            swal("Thất bại", "Có lỗi xảy ra: " + e, "error");
+            Swal.fire("Thất bại", "Có lỗi xảy ra: " + e, "error");
         }
     });
 }

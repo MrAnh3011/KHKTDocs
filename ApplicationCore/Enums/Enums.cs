@@ -4,10 +4,10 @@ namespace ApplicationCore.Enums
 {
     public enum DocumentStatus
     {
-        [Description("Ban hành")]
-        Release,
         [Description("Chờ duyệt")]
         Pending,
+        [Description("Ban hành")]
+        Release,
         [Description("Đã duyệt")]
         Approved
     }

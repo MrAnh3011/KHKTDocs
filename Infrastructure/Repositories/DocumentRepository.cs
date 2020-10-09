@@ -14,13 +14,13 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<int> ApproveDocument(int id)
+        public async Task<int> ApproveDocument(int id, string approver)
         {
-            string query = $"UPDATE apec_khktdocs_document a SET a.status = {(int)DocumentStatus.Approved}, a.APPROVE_DATE = CURRENT_DATE WHERE a.id = :id";
+            string query = $"UPDATE apec_khktdocs_document a SET a.status = {(int)DocumentStatus.Approved}, a.APPROVE_DATE = CURRENT_DATE, a.APPROVER = '{approver}' WHERE a.id = :id";
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {
                 conn.Open();
-                var result = await conn.ExecuteAsync(query, new { id });
+                var result = await conn.ExecuteAsync(query, new { id, approver });
 
                 return result;
             }

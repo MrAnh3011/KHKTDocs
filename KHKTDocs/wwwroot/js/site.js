@@ -1,10 +1,28 @@
 ﻿$(document).ready(async function () {
-
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+    });
     //#region Bind tree data to DocTree and Select
     var lstMenu = await GetListMenu();
 
     var lstSelect = BindMenuSelect(lstMenu.listMenu);
     $("#doc_folder").select2ToTree({ treeData: { dataArr: lstSelect } });
+
+    //#region change selected folder for select2 in view : Create
+    var url = new URL(window.location.href);
+    var c = url.searchParams.get("folderid");
+    if (c !== null && url.pathname == "/Home/Create") {
+        $("#doc_folder").val(c);
+        $("#doc_folder").trigger('change');
+    }
+    if (c !== null && url.pathname == "/Home/Index") {
+        SearchDocsByFolder(c);
+    }
+    //#endregion change selected folder for select2 in view : Create
+
     $("#role-user").select2();
     $("#doc_created").select2();
 
@@ -15,7 +33,48 @@
         },
         "plugins": ["contextmenu", "dnd", "types"],
         "contextmenu": {
-            "select_node": false
+            "select_node": false,
+            "items": function (node) {
+                var defaultItems = $.jstree.defaults.contextmenu.items();
+                defaultItems.create.label = "Thêm mới thư mục";
+                defaultItems.rename.label = "Đổi tên thư mục";
+                defaultItems.remove.label = "Xoá thư mục";
+                defaultItems.ccp = false;
+                defaultItems.download = {
+                    "label": "Tải về",
+                    "separator_after": false,
+                    "separator_before": false,
+                    "action": function (obj) {
+                        window.location.href = "/Home/DownloadFolder/" + node.id;
+                    }
+                };
+                defaultItems.addfile = {
+                    "label": "Thêm file",
+                    "separator_after": false,
+                    "separator_before": false,
+                    "action": function (obj) {
+                        window.location.href = "/Home/Create?folderid=" + node.id;
+                    }
+                };
+                defaultItems.getLink = {
+                    "label": "Get link",
+                    "separator_after": false,
+                    "separator_before": false,
+                    "action": function (obj) {
+                        let link = "docs.apecgroup.net/Home/Index?folderid=" + node.id;
+
+                        let $temp = $("<input>");
+                        $("body").append($temp);
+                        $temp.val(link).select();
+                        document.execCommand("copy");
+                        $temp.remove();
+
+                        Toast.fire({ title: "Đã lưu link vào bộ nhớ đệm", icon: "success" });
+                    }
+                };
+
+                return defaultItems;
+            }
         }
     });
 
@@ -33,6 +92,7 @@
         };
         var result = await SaveDocType(model);
         $("#doctree").jstree(true).set_id(data.node, result.result);
+        console.log(data.node.id);
     });
     $("#doctree").on("delete_node.jstree", function (e, data) {
         console.log("delete");
@@ -68,16 +128,18 @@
         },
         rowId: 'DocumentId',
         "columnDefs": [
-            { "targets": [10, 11], "visible": false },
-            { "width": "7%", "targets": [2, 3, 5, 8, 9] },
-            { "width": "10%", "targets": [4, 6, 7] },
+            { "targets": [11, 12], "visible": false },
+            { "width": "7%", "targets": [2, 8]},
+            { "width": "5%", "targets": 3 },
+            { "width": "8%", "targets": [4, 6, 7] },
+            { "width": "10%", "targets": [5, 9] },
             { "width": "15%", "targets": 1 },
             { "width": "2%", "targets": 0 }
         ]
     });
 
     var columnFilter =
-        "<tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr >";
+        "<tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr >";
     $(columnFilter).appendTo("#tbl-docs thead");
     $("#tbl-docs thead tr:eq(1) th").each(function (i) {
         var title = $(this).text();
@@ -123,12 +185,12 @@
                     BindDataToTable(response);
                     HideLoadingScreen();
                 } else {
-                    swal("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
+                    Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
                     HideLoadingScreen();
                 }
             },
             error: function (e) {
-                swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
+                Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
                 HideLoadingScreen();
             }
         });
@@ -203,18 +265,18 @@ function SearchAllDocs() {
                 if (result.status == "success") {
                     BindDataToTable(result);
                 } else {
-                    swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
+                    Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
                 }
                 HideLoadingScreen();
             },
             error: function (e) {
                 HideLoadingScreen();
-                swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
+                Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
             }
         });
     } catch (err) {
         HideLoadingScreen();
-        swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
+        Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
     }
 }
 
@@ -230,18 +292,18 @@ function SearchDocsByFolder(folderId) {
                     BindDataToTable(result);
                 }
                 else {
-                    swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
+                    Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
                 }
                 HideLoadingScreen();
             },
             error: function (err) {
                 HideLoadingScreen();
-                swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
+                Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
             }
         });
     } catch (e) {
         HideLoadingScreen();
-        swal("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
+        Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
     }
 }
 
@@ -265,34 +327,35 @@ function BindDataToTable(result) {
             var actionApprove = "";
 
         var docName = rs[i].document_name + rs[i].document_extension;
-        if (docName.includes('.ppt') ||
-            docName.includes('.pptx') ||
-            docName.includes('.doc') ||
-            docName.includes('.docx') ||
-            docName.includes('.xls') ||
-            docName.includes('.xlsx')) {
+        if (docName.toLowerCase().includes('.ppt') ||
+            docName.toLowerCase().includes('.pptx') ||
+            docName.toLowerCase().includes('.doc') ||
+            docName.toLowerCase().includes('.docx') ||
+            docName.toLowerCase().includes('.xls') ||
+            docName.toLowerCase().includes('.xlsx')) {
             displayName = "<a target='_blank' href='https://view.officeapps.live.com/op/embed.aspx?src=http://docs.apecgroup.net/uploads/" +
                 encodeURI(docName) +
                 "'><i class='fa fa-eye'></i> " + rs[i].document_name + "</a>";
-        } else if (docName[0].includes('.pdf') || docName[0].includes('.txt')) {
-            displayName = "<a target='_blank' href='http://http://localhost:54523/uploads/" +
-                docName[0] +
-                "'><i class='fa fa-eye'></i> " + rs[i].display_name + "</a>";
+        } else if (docName.includes('.pdf') || docName.includes('.txt')) {
+            displayName = "<a target='_blank' href='http://docs.apecgroup.net/uploads/" +
+                docName +
+                "'><i class='fa fa-eye'></i> " + rs[i].document_name + "</a>";
         }
         actionDown = "<a href='/Home/DownloadFile/" + rs[i].id + "'><i class='fa fa-download'></i></a>";
 
         table.row.add([
             i + 1,
             displayName,
+            actionDelete + "&emsp;" + actionDown,
             rs[i].document_extension,
-            rs[i].folder_name,
+            "<a href='#' onclick='SearchDocsByFolder(" + rs[i].folder_id + ")'>" + rs[i].folder_name + "</a>",
             rs[i].created_user,
-            rs[i].document_receiver,
             rs[i].created_date,
             rs[i].approve_date,
             rs[i].status == "Chờ duyệt" ? rs[i].status + "<br>" + actionApprove : rs[i].status,
-            actionDelete + "&emsp;" + actionDown,
+            rs[i].approver,
             rs[i].document_description,
+            rs[i].document_receiver,
             rs[i].id
         ]);
     }
@@ -308,16 +371,15 @@ function SaveDocType(model) {
         success: function (result) {
             if (result.status == "success") {
                 HideLoadingScreen();
-                swal("Thành công", model.action + " thành công", "success");
+                Swal.fire("Thành công", model.action + " thành công", "success");
             } else {
                 HideLoadingScreen();
-                swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
+                Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
             }
-
         },
         error: function (err) {
             HideLoadingScreen();
-            swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
+            Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
         }
     });
 }
@@ -332,29 +394,28 @@ function ApproveDoc(id) {
         success: function (result) {
             if (result.status == "success") {
                 SearchAllDocs();
-                swal("Thành công", "Duyệt thành công", "success");
+                Swal.fire("Thành công", "Duyệt thành công", "success");
             }
             else {
-                swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
+                Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
             }
             HideLoadingScreen();
         },
         error: function (err) {
             HideLoadingScreen();
-            swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
+            Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
         }
     });
 }
 
 function DeleteDoc(id) {
-    swal({
+    Swal.fire({
         title: "Bạn chắc chắn ?",
         text: "Bạn có chắc muốn xoá mục này ?",
         icon: "warning",
-        buttons: true,
-        dangerMode: true,
+        showCancelButton: true,
     }).then((res) => {
-        if (res) {
+        if (res.isConfirmed) {
             ShowLoadingScreen();
             $.ajax({
                 url: "/Home/Delete",
@@ -365,16 +426,16 @@ function DeleteDoc(id) {
                 success: function (result) {
                     if (result.status == "success") {
                         SearchAllDocs();
-                        swal("Thành công", "Xoá thành công", "success");
+                        Swal.fire("Thành công", "Xoá thành công", "success");
                     }
                     else {
-                        swal("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
+                        Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + result.message, "error");
                     }
                     HideLoadingScreen();
                 },
                 error: function (err) {
                     HideLoadingScreen();
-                    swal("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
+                    Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + err, "error");
                 }
             });
         }

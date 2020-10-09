@@ -11,11 +11,13 @@ namespace ApplicationCore.DTOs
         public string created_user { get; set; }
         public string document_receiver { get; set; }
         public string status { get; set; }
-        public DateTime? approve_date { get; set; }
+        public string approve_date { get; set; }
         public string document_extension { get; set; }
         public string folder_name { get; set; }
-        public DateTime? created_date { get; set; }
-        public DateTime? modified_date { get; set; }
+        public int folder_id { get; set; }
+        public string created_date { get; set; }
+        public string modified_date { get; set; }
         public string document_agency { get; set; }
+        public string approver { get; set; }
     }
 }
