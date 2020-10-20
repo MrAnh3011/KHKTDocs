@@ -48,7 +48,26 @@ namespace ApplicationCore.Services
                     return;
                 }
 
+                var username = await _userRepository.GetUsersByUserName(document.approver).ConfigureAwait(false);
+                var sender = await _userRepository.GetUsersByUserName(document.created_user).ConfigureAwait(false);
+                var folder = await _doctypeRepository.GetByIdAsync(document.document_folder_id).ConfigureAwait(false);
+
+                MailSenderDTOs mail = new MailSenderDTOs
+                {
+                    approver = username.display_name,
+                    requester = document.created_user,
+                    folder = folder.text,
+                    docname = document.document_name,
+                    docdate = document.created_date,
+                    note = document.document_description,
+                    link = "http://docs.apecgroup.net/Home/Index?folderid=" + document.document_folder_id,
+                    approverMail = username.email,
+                    sendermail = sender.email,
+                    status = GetDocDesEnum(document.status)
+                };
+
                 await _documentRepository.SaveDocument(document).ConfigureAwait(false);
+                await _documentRepository.SendMail(mail).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -92,7 +111,7 @@ namespace ApplicationCore.Services
                     document_name = item.document_name,
                     document_description = item.document_description,
                     document_extension = item.document_extension,
-                    created_user = username.display_name,
+                    created_user = username.username,
                     created_date = item.created_date?.ToString("dd/MM/yyyy"),
                     approve_date = item.approve_date?.ToString("dd/MM/yyyy"),
                     folder_name = foldername.text,
@@ -211,6 +230,19 @@ namespace ApplicationCore.Services
                     break;
             }
             return result;
+        }
+
+        public async Task SendMail(MailSenderDTOs mailInfo)
+        {
+            try
+            {
+                await _documentRepository.SendMail(mailInfo);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
     }
 }

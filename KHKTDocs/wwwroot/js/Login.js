@@ -55,6 +55,7 @@
                     }
                 },
                 error: function (e) {
+                    HideLoadingScreen();
                     Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
                 }
             });

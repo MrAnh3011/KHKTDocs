@@ -50,19 +50,18 @@ namespace KHKTDocs.Controllers
             try
             {
                 IEnumerable<IFormFile> file = Request.Form.Files;
-                string stage = Request.Form["stage"].ToString();
                 string doc_description = Request.Form["doc_description"].ToString();
                 string create_user = Request.Form["create_user"].ToString();
                 string status = Request.Form["status"].ToString();
                 string created_date = Request.Form["created_date"].ToString();
                 string doc_folder = Request.Form["doc_folder"].ToString();
-                string doc_receiver = Request.Form["doc_receiver"].ToString();
-                string doc_agency = Request.Form["doc_agency"].ToString();
+                string doc_approver = Request.Form["doc_approver"].ToString();
 
                 foreach (var item in file)
                 {
                     using (var memoryStream = new MemoryStream())
                     {
+                        //Upload Document
                         item.OpenReadStream().CopyTo(memoryStream);
                         var fileData = memoryStream.ToArray();
                         var fullpath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\uploads", item.FileName);
@@ -74,7 +73,6 @@ namespace KHKTDocs.Controllers
 
                         apec_khktdocs_document document = new apec_khktdocs_document
                         {
-                            stage = stage,
                             document_description = doc_description,
                             document_extension = Path.GetExtension(item.FileName),
                             document_name = Path.GetFileNameWithoutExtension(item.FileName),
@@ -82,8 +80,7 @@ namespace KHKTDocs.Controllers
                             created_user = create_user,
                             created_date = Convert.ToDateTime(created_date),
                             status = int.Parse(status),
-                            document_receiver = doc_receiver,
-                            document_agency = doc_agency
+                            approver = doc_approver
                         };
                         await _documentService.SaveDocument(document);
                     }
@@ -250,10 +247,11 @@ namespace KHKTDocs.Controllers
             {
                 System.Security.Claims.ClaimsPrincipal currentUser = this.User;
                 var role = currentUser.Claims.Where(x => x.Type == System.Security.Claims.ClaimTypes.Role).Select(x => x.Value);
+                var userName = currentUser.Claims.Where(x => x.Type == "UserName").FirstOrDefault().Value;
 
                 if (role.Contains("Approve") || role.Contains("Admin") || role.Contains("SuperAdmin"))
                 {
-                    await _documentService.ApproveDocument(int.Parse(model.data), currentUser.Identity.Name);
+                    await _documentService.ApproveDocument(int.Parse(model.data), userName);
                     return Json(new { status = "success", message = "success !" });
                 }
                 return Json(new { status = "fail", message = " Duyệt không thành công! \n Không có quyền duyệt!" });

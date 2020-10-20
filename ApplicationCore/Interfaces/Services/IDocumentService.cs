@@ -14,5 +14,6 @@ namespace ApplicationCore.Interfaces.Services
         Task ApproveDocument(int id, string approver);
         Task<IEnumerable<DocumentDetailDTO>> GetDocsByFolderId(string id);
         Task<IEnumerable<DocumentDetailDTO>> GetDocsByConditions(SearchConditionsDTO model);
+        Task SendMail(MailSenderDTOs mailInfo);
     }
 }

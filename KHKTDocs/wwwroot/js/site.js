@@ -21,10 +21,14 @@
     if (c !== null && url.pathname == "/Home/Index") {
         SearchDocsByFolder(c);
     }
+    if (c == null || url.pathname == "/") {
+        SearchAllDocs();
+    }
     //#endregion change selected folder for select2 in view : Create
 
     $("#role-user").select2();
     $("#doc_created").select2();
+    $("#doc_approver").select2();
 
     $("#doctree").jstree({
         "core": {
@@ -79,7 +83,7 @@
     });
 
     $("#doctree").on("select_node.jstree", function (e, data) {
-        SearchDocsByFolder(data.node.id);
+        window.location.href = "/Home/Index?folderid=" + data.node.id;
     });
 
     $("#doctree").on("rename_node.jstree", async function (e, data) {
@@ -129,11 +133,9 @@
         rowId: 'DocumentId',
         "columnDefs": [
             { "targets": [11, 12], "visible": false },
-            { "width": "7%", "targets": [2, 8]},
-            { "width": "5%", "targets": 3 },
-            { "width": "8%", "targets": [4, 6, 7] },
-            { "width": "10%", "targets": [5, 9] },
-            { "width": "15%", "targets": 1 },
+            { "width": "7%", "targets": 2 },
+            { "width": "20%", "targets": 1 },
+            { "width": "15%", "targets": [4, 10] },
             { "width": "2%", "targets": 0 }
         ]
     });
@@ -156,7 +158,7 @@
             });
     });
     //#endregion Bind data to DataTable
-    SearchAllDocs();
+    //SearchAllDocs();
 
     $("#btnSearchDocs").click(function () {
         ShowLoadingScreen();
@@ -312,7 +314,11 @@ function BindDataToTable(result) {
     var rs = result.listDocs;
     table.clear().draw();
     for (var i = 0; i < rs.length; i++) {
-        var displayName = rs[i].document_name;
+        var subName = rs[i].document_name;
+        if (subName.length > 20) {
+            subName = subName.substring(0, 20) + "...";
+        }
+        var displayName = "<span data-toggle='tooltip' data-placement='top' title='" + rs[i].document_name + "'>" + subName + "</span>";
         var actionDown = "";
         var actionDelete = "";
 
@@ -333,13 +339,13 @@ function BindDataToTable(result) {
             docName.toLowerCase().includes('.docx') ||
             docName.toLowerCase().includes('.xls') ||
             docName.toLowerCase().includes('.xlsx')) {
-            displayName = "<a target='_blank' href='https://view.officeapps.live.com/op/embed.aspx?src=http://docs.apecgroup.net/uploads/" +
+            displayName = "<a target='_blank' data-toggle='tooltip' data-placement='top' href='https://view.officeapps.live.com/op/embed.aspx?src=http://docs.apecgroup.net/uploads/" +
                 encodeURI(docName) +
-                "'><i class='fa fa-eye'></i> " + rs[i].document_name + "</a>";
+                "' title='" + rs[i].document_name + "'><i class='fa fa-eye'></i> " + subName + "</a>";
         } else if (docName.includes('.pdf') || docName.includes('.txt')) {
-            displayName = "<a target='_blank' href='http://docs.apecgroup.net/uploads/" +
+            displayName = "<a target='_blank' data-toggle='tooltip' data-placement='top' href='http://docs.apecgroup.net/uploads/" +
                 docName +
-                "'><i class='fa fa-eye'></i> " + rs[i].document_name + "</a>";
+                "' title='" + rs[i].document_name + "'><i class='fa fa-eye'></i> " + subName + "</a>";
         }
         actionDown = "<a href='/Home/DownloadFile/" + rs[i].id + "'><i class='fa fa-download'></i></a>";
 
@@ -348,12 +354,12 @@ function BindDataToTable(result) {
             displayName,
             actionDelete + "&emsp;" + actionDown,
             rs[i].document_extension,
-            "<a href='#' onclick='SearchDocsByFolder(" + rs[i].folder_id + ")'>" + rs[i].folder_name + "</a>",
+            "<a href='/Home/Index?folderid ="+ rs[i].id +"'>" + rs[i].folder_name + "</a>",
             rs[i].created_user,
             rs[i].created_date,
             rs[i].approve_date,
-            rs[i].status == "Chờ duyệt" ? rs[i].status + "<br>" + actionApprove : rs[i].status,
             rs[i].approver,
+            rs[i].status == "Chờ duyệt" ? rs[i].status + "<br>" + actionApprove : rs[i].status,
             rs[i].document_description,
             rs[i].document_receiver,
             rs[i].id
@@ -440,4 +446,10 @@ function DeleteDoc(id) {
             });
         }
     });
-}
+};
+$(document).ajaxComplete(function () {
+    $('[data-toggle="tooltip"]').tooltip({
+        "html": true,
+        "delay": { "show": 300, "hide": 0 },
+    });
+});

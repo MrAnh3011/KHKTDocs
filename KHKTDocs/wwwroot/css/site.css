@@ -100,6 +100,10 @@ header nav a:first-child {
     font-weight: bold;
 }
 
+header nav a:first-child:hover {
+    color: #dc3545 !important;
+}
+
 header nav a:last-child {
     padding: 5px;
     border: 1px solid rgb(225,225,225,0);

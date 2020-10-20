@@ -33,26 +33,6 @@
         </div>
         <div class="col-md-12">
             <div class="form-group col-md-6">
-                <span>Cơ quan ban hành</span>
-                <input id="doc_agency" type="text" class="form-control" />
-            </div>
-            <div class="form-group col-md-6">
-                <span>Ngày đăng</span>
-                <input id="doc_created_date" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group col-md-6">
-                <span>Nơi nhận</span>
-                <input id="doc_receiver" type="text" class="form-control" />
-            </div>
-            <div class="form-group col-md-6">
-                <span>Giai đoạn</span>
-                <input id="doc_stage" type="text" class="form-control" />
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group col-md-6">
                 <span>Trạng thái</span>
                 <select id="doc_status" class="form-control">
                     <option value="-1">--- Chọn trạng thái ---</option>
@@ -61,16 +41,26 @@
                 </select>
             </div>
             <div class="form-group col-md-6">
+                <span>Ngày đăng</span>
+                <input id="doc_created_date" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <span>Người duyệt</span>
+                <select id="doc_approver" class="form-control"></select>
+            </div>
+            <div class="form-group col-md-6">
                 <span>File</span>
-                <input id="doc_file" type="file" class="form-control-file" multiple="multiple"/>
+                <input id="doc_file" type="file" class="form-control-file" multiple="multiple" />
             </div>
         </div>
         <div class="col-md-12">
             <div class="col-md-12">
                 <span>Mô tả</span>
-                <textarea id="doc_description" type="" class="form-control" ></textarea>
+                <textarea id="doc_description" type="" class="form-control"></textarea>
             </div>
-         </div>
+        </div>
         <div class="col-md-12 create-button">
             <button id="submitDocs" type="submit" class="btn btn-success">Lưu</button>
             <a href="~/Home/Index" type="button" class="btn btn-danger">Hủy</a>
