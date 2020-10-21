@@ -15,5 +15,6 @@ namespace ApplicationCore.Interfaces.Services
         Task<IEnumerable<DocumentDetailDTO>> GetDocsByFolderId(string id);
         Task<IEnumerable<DocumentDetailDTO>> GetDocsByConditions(SearchConditionsDTO model);
         Task SendMail(MailSenderDTOs mailInfo);
+        Task EditNote(int id, string note);
     }
 }

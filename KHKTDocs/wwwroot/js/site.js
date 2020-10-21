@@ -140,8 +140,42 @@
         ]
     });
 
+    $('#tbl-docs tbody').on('click', 'td:last-child',async function () {
+        let data = table.row(this).data();
+        let input = await Swal.fire({
+            title: 'Nhập ghi chú',
+            input: 'text',
+            inputValue: data[10],
+            showCancelButton: true,
+        });
+
+        let note = JSON.stringify({
+            id: data[12],
+            note: input.value
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/EditNote",
+            data: note,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                if (response.status == "success") {
+                    Swal.fire("Thành công", "Sửa thành công", "success");
+                    SearchAllDocs();
+                } else {
+                    Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + response.message, "error");
+                }
+            },
+            error: function (e) {
+                Swal.fire("Lỗi", "Vui lòng kiểm tra lại: " + e, "error");
+            }
+        });
+    });
+
     var columnFilter =
-        "<tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr >";
+        "<tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>";
     $(columnFilter).appendTo("#tbl-docs thead");
     $("#tbl-docs thead tr:eq(1) th").each(function (i) {
         var title = $(this).text();
@@ -150,10 +184,7 @@
         $("input", this).on("keyup change",
             function () {
                 if (table.column(i).search() !== this.value) {
-                    table
-                        .column(i)
-                        .search(this.value)
-                        .draw();
+                    table.column(i).search(this.value).draw();
                 }
             });
     });
@@ -366,6 +397,10 @@ function BindDataToTable(result) {
         ]);
     }
     table.draw(false);
+}
+
+function ChangeDescription(obj) {
+    console.log($(obj).text());
 }
 
 function SaveDocType(model) {

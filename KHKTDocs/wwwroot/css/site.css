@@ -210,6 +210,11 @@ header nav a:last-child i {
     vertical-align: middle;
 }
 
+.docmanage-content .doclist .doc-grid table tbody tr td:last-child:hover {
+    background: #c5c5c5 !important;
+    cursor: pointer;
+}
+
 .docmanage-content .doclist .doc-grid table tbody tr td i {
     font-size: 18px;
 }
@@ -267,8 +272,8 @@ header nav a:last-child i {
 #modalAdd .modal-body .form-group span.select2-container {
     width: 100% !important;
 }
-/* Sticky footer styles
--------------------------------------------------- */
+
+/* Sticky footer styles-------------------------------------------------- */
 html {
     font-size: 14px;
 }

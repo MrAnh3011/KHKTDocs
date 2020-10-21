@@ -28,6 +28,16 @@ namespace Infrastructure.Repositories
             }
         }
 
+        public async Task EditNote(int id, string note)
+        {
+            string query = "UPDATE apec_khktdocs_document SET DOCUMENT_DESCRIPTION = :note WHERE ID = :id";
+            using (OracleConnection conn = new OracleConnection(_connectionString))
+            {
+                conn.Open();
+                await conn.ExecuteAsync(query, new { id, note });
+            }
+        }
+
         public async Task<int> SaveDocument(apec_khktdocs_document document)
         {
             try

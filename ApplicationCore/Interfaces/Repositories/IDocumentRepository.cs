@@ -9,5 +9,6 @@ namespace ApplicationCore.Interfaces.Repositories
         Task<int> SaveDocument(apec_khktdocs_document document);
         Task<int> ApproveDocument(int id, string approver);
         Task SendMail(MailSenderDTOs mailInfo);
+        Task EditNote(int id, string note);
     }
 }

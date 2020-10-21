@@ -10,7 +10,9 @@ $.ajax({
             let data = response.lstUser;
             $.each(data, function (index, value) {
                 $("#doc_created").append('<option value="' + value.username + '">' + value.full_name + '</option>');
-                $("#doc_approver").append('<option value="' + value.username + '">' + value.full_name + '</option>');
+                if (value.username === "lynv" || value.username === "hungpd") {
+                    $("#doc_approver").append('<option value="' + value.username + '">' + value.full_name + '</option>');
+                }
             });
             $("#doc_created").val(response.username).change();
             $("#doc_approver").val('lynv').change();

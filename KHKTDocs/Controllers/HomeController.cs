@@ -94,20 +94,18 @@ namespace KHKTDocs.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var model = await _documentService.GetDocumentById(id);
-
-            return View(model);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Edit(apec_khktdocs_document document)
+        public async Task<JsonResult> EditNote([FromBody]NoteModel note)
         {
-            await _documentService.SaveDocument(document);
-
-            return RedirectToAction("Index", "Home");
+            try
+            {
+                await _documentService.EditNote(note.id, note.note);
+                return Json(new { status = "success", message = "success" });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = "fail", message = e });
+            }
         }
 
         [Authorize(Roles = "Admin, SuperAdmin, Delete")]

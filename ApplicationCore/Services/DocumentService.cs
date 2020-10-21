@@ -211,6 +211,32 @@ namespace ApplicationCore.Services
 
         }
 
+        public async Task SendMail(MailSenderDTOs mailInfo)
+        {
+            try
+            {
+                await _documentRepository.SendMail(mailInfo);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task EditNote(int id, string note)
+        {
+            try
+            {
+                await _documentRepository.EditNote(id, note).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+
         private string GetDocDesEnum(int status)
         {
             string result;
@@ -230,19 +256,6 @@ namespace ApplicationCore.Services
                     break;
             }
             return result;
-        }
-
-        public async Task SendMail(MailSenderDTOs mailInfo)
-        {
-            try
-            {
-                await _documentRepository.SendMail(mailInfo);
-            }
-            catch (Exception e)
-            {
-
-                throw;
-            }
         }
     }
 }
