@@ -35,6 +35,11 @@ namespace KHKTDocs.Controllers
 
         public IActionResult Index()
         {
+            //var user = this.User;
+            //if (user.IsInRole("SuperAdmin"))
+            //{
+            //    return RedirectToAction("Index", "Training");
+            //}
             return View();
         }
 
